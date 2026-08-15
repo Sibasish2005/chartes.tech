@@ -43,7 +43,7 @@ export default function Hero() {
         style={{ filter: videoFilter, scale: videoScale }}
         className="absolute inset-0 h-full w-full object-cover origin-center"
       >
-        <source src="/HeroBackground.mp4" type="video/mp4" />
+        <source src="/background.mp4" type="video/mp4" />
       </motion.video>
 
       {/* Hero Content */}
@@ -58,7 +58,7 @@ export default function Hero() {
               ${robotoSlab.className}
               text-[20vw]
               md:text-[10vw]
-              lg:text-[140px]
+              lg:text-[120px]
               font-bold
               leading-[0.9]
               tracking-tight

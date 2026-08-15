@@ -1,8 +1,10 @@
 import Hero from "@/components/(landing-page)/hero"
-import Aboutus from "@/components/(landing-page)/aboutus"
+import Solutions from "@/components/(landing-page)/solutions"
 import Navbar from "@/components/(landing-page)/navbar"
 import Growth from "@/components/(landing-page)/growth"
 import Services from "@/components/(landing-page)/services"
+import AboutMe from "@/components/(landing-page)/aboutMe"
+import Footer from "@/components/(landing-page)/footer"
 
 export default function Home() {
   return (
@@ -10,9 +12,10 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Growth/>
-      <Aboutus/>
+      <Solutions/>
+      <AboutMe/>
       <Services/>
-
+      <Footer/>
     </div>
   )
 }

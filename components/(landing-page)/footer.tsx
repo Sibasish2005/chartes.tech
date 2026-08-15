@@ -1,0 +1,70 @@
+"use client";
+
+import { Roboto_Slab, Poppins } from "next/font/google";
+import Link from "next/link";
+
+const robotoSlab = Roboto_Slab({ subsets: ["latin"], weight: ["400", "700"] });
+const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
+
+export default function Footer() {
+  return (
+    <footer className="w-full bg-[#0D0D0D] text-[#F3EBDD] flex flex-col">
+      {/* Call to Action Section (Moved from Services) */}
+      <div className="w-full px-[5vw] py-28 md:py-36 lg:py-44 flex flex-col items-center justify-center text-center gap-8 border-b border-neutral-800/80">
+        <div className="flex flex-col gap-4 max-w-3xl">
+          <h2 className={`${robotoSlab.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight`}>
+            Have something <br /> worth building?
+          </h2>
+          <p className={`${poppins.className} text-lg sm:text-xl md:text-2xl font-light text-[#F3EBDD]/70 mt-2`}>
+            Let's build it.
+          </p>
+        </div>
+        <Link
+          href="/booking"
+          className={`${poppins.className} mt-4 px-8 py-4 bg-[#A67C3D] hover:bg-[#8f6b34] text-white text-base md:text-lg rounded-full font-semibold transition-all shadow-[0_4px_20px_rgba(166,124,61,0.3)] hover:shadow-[0_6px_25px_rgba(166,124,61,0.45)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2.5`}
+        >
+          <span>Book a Call</span>
+          <span>→</span>
+        </Link>
+      </div>
+
+      {/* Footer Bottom / Navigation Links */}
+      <div className="w-full max-w-7xl mx-auto px-[5vw] py-12 md:py-16 flex flex-col md:flex-row items-center justify-between gap-8">
+        {/* Logo & Tagline */}
+        <div className="flex flex-col items-center md:items-start gap-2">
+          <Link href="/">
+            <img
+              src="/logo.png"
+              alt="Omninode Logo"
+              className="h-8 md:h-10 w-auto object-contain brightness-0 invert"
+            />
+          </Link>
+          <p className={`${poppins.className} text-xs md:text-sm text-[#F3EBDD]/50 font-light`}>
+            Turning complex workflows into purposeful digital experiences.
+          </p>
+        </div>
+
+        {/* Footer Navigation */}
+        <div className={`${poppins.className} flex flex-wrap items-center justify-center gap-6 md:gap-10 text-xs md:text-sm text-[#F3EBDD]/70`}>
+          <Link href="/" className="hover:text-[#A67C3D] transition-colors">
+            Home
+          </Link>
+          <Link href="#about" className="hover:text-[#A67C3D] transition-colors">
+            About
+          </Link>
+          <Link href="#services" className="hover:text-[#A67C3D] transition-colors">
+            Services
+          </Link>
+          <Link href="#contact" className="hover:text-[#A67C3D] transition-colors">
+            Contact
+          </Link>
+        </div>
+
+        {/* Copyright */}
+        <div className={`${poppins.className} text-xs text-[#F3EBDD]/40 text-center md:text-right`}>
+          © {new Date().getFullYear()} Omninode. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+}

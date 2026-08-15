@@ -46,7 +46,7 @@ export default function Navbar() {
 
   return (
     <nav className={`${poppins.className} w-full bg-white border-b border-gray-100 relative z-50`}>
-      <div className="max-w-[1600px] w-full mx-auto px-6 md:px-20 lg:px-10 h-[60px] lg:h-[120px] flex items-center justify-between">
+      <div className="max-w-[1600px] w-full mx-auto px-6 md:px-20 lg:px-10 h-[60px] lg:h-[90px] flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
           <Link href="/">
