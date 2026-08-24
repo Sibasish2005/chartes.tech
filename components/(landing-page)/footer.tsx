@@ -49,7 +49,7 @@ export default function Footer() {
           <Link href="/">
             <img
               src="/logo.png"
-              alt="Omninode Logo"
+              alt="chartes.tech Logo"
               className="h-8 md:h-10 w-auto object-contain brightness-0 invert"
             />
           </Link>
@@ -79,7 +79,7 @@ export default function Footer() {
 
         {/* Copyright & Legal */}
         <div className={`${poppins.className} text-xs text-[#F3EBDD]/40 text-center md:text-right flex flex-col sm:flex-row items-center gap-2 sm:gap-4`}>
-          <span>© {new Date().getFullYear()} Omninode. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} chartes.tech. All rights reserved.</span>
           <span className="hidden sm:inline text-[#F3EBDD]/20">•</span>
           <Link href="/privacy" className="hover:text-[#A67C3D] transition-colors underline-offset-4 hover:underline">
             Privacy Policy
