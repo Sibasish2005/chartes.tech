@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Omnicode | Social Media Management & Brand Growth",
+  title: "Chartes | Social Media Management & Brand Growth",
   description: "Transforming brand presence into high-converting social narratives, viral campaigns, and organic community growth.",
 };
 

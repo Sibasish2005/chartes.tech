@@ -53,7 +53,7 @@ export default function Navbar() {
             <img 
               src="/logo.png" 
               alt="Omnii Logo" 
-              className="h-8 md:h-12 lg:h-[100px] w-auto object-contain"
+              className="h-14 md:h-20 lg:h-[180px] w-auto object-contain"
             />
           </Link>
         </div>
