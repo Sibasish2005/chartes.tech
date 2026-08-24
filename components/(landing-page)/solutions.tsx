@@ -12,30 +12,30 @@ const poppins = Poppins({
 const workflowSteps = [
   {
     number: "01",
-    title: "Understand the workflow",
+    title: "Uncover the brand voice",
     description:
-      "We start by understanding how your institution actually works — how leads become students, how teachers manage learning, how administrators operate, and where manual processes slow everything down.",
+      "We start by dissecting your brand identity, audience psychology, competitive landscape, and content gaps to define the unique angles and narrative hooks that will captivate your niche.",
     image: "/workflow/workflow1.jpg",
   },
   {
     number: "02",
-    title: "Build around the workflow",
+    title: "Engineer high-impact content",
     description:
-      "Instead of forcing your business into an existing SaaS product, we design the technology around your processes. CRM, LMS, dashboards, portals, web applications, and mobile experiences are built to fit the people who use them.",
+      "Instead of cookie-cutter posts, we build tailored content pillars, high-retention short-form video scripts, viral hooks, visual assets, and carousels designed to stop the scroll.",
     image: "/workflow/workflow2.jpg",
   },
   {
     number: "03",
-    title: "Connect everything that matters",
+    title: "Ignite organic community",
     description:
-      "Your data, users, communication, payments, learning activities, and operational processes shouldn't live in isolated systems. We create connected experiences that allow information to move where it needs to go.",
+      "Your audience shouldn't just be passive followers. We drive active comment conversations, proactive engagement, influencer collaborations, and DM interactions that cultivate brand loyalty.",
     image: "/workflow/workflow3.jpg",
   },
   {
     number: "04",
-    title: "Prepare it for growth",
+    title: "Scale conversions and revenue",
     description:
-      "The solution shouldn't only solve today's problem. We build with scalability, maintainability, automation, analytics, and future integrations in mind — giving your business a foundation that can evolve as your users and requirements grow.",
+      "Social growth is meaningless without business impact. We continuously analyze watch-time, engagement velocity, click-through rates, and lead funnels to turn viral views into loyal customers.",
     image: "/workflow/workflow4.jpg",
   },
 ];
@@ -70,7 +70,7 @@ export default function Solutions() {
 
                 Your{" "}
                 <span className="text-[#A67C3D]">
-                  Business.
+                  Brand.
                 </span>
               </span>
 

@@ -67,10 +67,10 @@ export default function Hero() {
             `}
           >
             Every <br />
-            Institute <br />
+            Brand <br />
             Begins <br />
             with a Big <br />
-            Idea
+            Story
           </motion.h1>
         </div>
       </div>

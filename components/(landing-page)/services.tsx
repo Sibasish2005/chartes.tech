@@ -9,9 +9,9 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600
 const services = [
   {
     number: "01",
-    label: "CRM SYSTEMS",
-    title: "Turn relationships into workflows.",
-    description: "Manage leads, admissions, communication, and customer data through a CRM designed around your operations.",
+    label: "CONTENT STRATEGY & PLANNING",
+    title: "Turn feeds into conversion engines.",
+    description: "In-depth channel audits, monthly content calendars, competitor benchmarking, and custom hook frameworks tailored to your specific audience niche.",
     image: "/lms.jpg",
     accent: "text-[#A67C3D]",
     badgeBg: "bg-[#A67C3D]/10 text-[#A67C3D] border-[#A67C3D]/20",
@@ -19,9 +19,9 @@ const services = [
   },
   {
     number: "02",
-    label: "LEARNING MANAGEMENT SYSTEMS",
-    title: "Make learning easier to manage.",
-    description: "Build platforms for courses, students, teachers, assessments, progress, and everything in between.",
+    label: "SHORT-FORM VIDEO & REELS",
+    title: "Stop the scroll with high-retention video.",
+    description: "End-to-end ideation, scripting, dynamic editing, sound design, and trend curation for TikTok, Instagram Reels, and YouTube Shorts.",
     image: "/lms.jpg",
     accent: "text-[#2D6A4F]",
     badgeBg: "bg-[#2D6A4F]/10 text-[#2D6A4F] border-[#2D6A4F]/20",
@@ -29,9 +29,9 @@ const services = [
   },
   {
     number: "03",
-    label: "CUSTOM WEB APPLICATIONS",
-    title: "If it doesn't exist, we build it.",
-    description: "Purpose-built applications designed around your unique workflows, users, and operational requirements.",
+    label: "COMMUNITY & ENGAGEMENT",
+    title: "Build real loyalty with your audience.",
+    description: "Proactive comment interactions, inbound DM triage, audience nurturing, and strategic engagement that turns casual viewers into brand superfans.",
     image: "/lms.jpg",
     accent: "text-[#1D3557]",
     badgeBg: "bg-[#1D3557]/10 text-[#1D3557] border-[#1D3557]/20",
@@ -39,9 +39,9 @@ const services = [
   },
   {
     number: "04",
-    label: "MOBILE APPLICATIONS",
-    title: "Your product, wherever your users are.",
-    description: "Extend your digital experience into intuitive mobile applications for students, teachers, parents, teams, and customers.",
+    label: "CROSS-PLATFORM DISTRIBUTION",
+    title: "Your brand story, unified everywhere.",
+    description: "Seamless syndication across LinkedIn, Instagram, X, TikTok, and YouTube with platform-native adaptations for maximum viral reach.",
     image: "/lms.jpg",
     accent: "text-[#A67C3D]",
     badgeBg: "bg-[#A67C3D]/10 text-[#A67C3D] border-[#A67C3D]/20",
@@ -49,9 +49,9 @@ const services = [
   },
   {
     number: "05",
-    label: "AI-POWERED SOLUTIONS",
-    title: "Turn data into action.",
-    description: "Integrate intelligent automation, assistants, insights, recommendations, and AI workflows into your products.",
+    label: "ANALYTICS & GROWTH OPTIMIZATION",
+    title: "Turn data into exponential reach.",
+    description: "Audience retention mapping, thumbnail and hook split-testing, funnel attribution tracking, and comprehensive monthly ROI growth reports.",
     image: "/lms.jpg",
     accent: "text-[#2D6A4F]",
     badgeBg: "bg-[#2D6A4F]/10 text-[#2D6A4F] border-[#2D6A4F]/20",
@@ -65,13 +65,13 @@ export default function Services() {
       {/* Opening Section with balanced spacing */}
       <div className="w-full px-[5vw] max-w-5xl mx-auto flex flex-col gap-5 md:gap-7 mb-12 md:mb-16 text-center items-center">
         <span className={`${poppins.className} text-xs md:text-sm font-semibold tracking-[0.2em] text-[#A67C3D] uppercase`}>
-          WHAT WE BUILD
+          WHAT WE DELIVER
         </span>
         <h2 className={`${robotoSlab.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight max-w-4xl`}>
-          Digital Products, Built Around Your Business.
+          Social Strategy, Built Around Your Growth.
         </h2>
         <p className={`${poppins.className} text-base sm:text-lg md:text-xl text-[#141E30]/75 font-light leading-relaxed max-w-2xl`}>
-          From education platforms to custom digital experiences, we build the technology your workflow actually needs.
+          From viral video production to cohesive multi-channel management, we elevate your brand into an undeniable online presence.
         </p>
       </div>
 

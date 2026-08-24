@@ -80,16 +80,16 @@ export default function Navbar() {
         {/* Desktop Call to Actions */}
         <div className="hidden md:flex items-center space-x-3 md:space-x-4">
           <Link 
-            href="/booking" 
+            href="/login" 
             className="px-5 py-2 lg:px-7 lg:py-3 bg-black text-white text-xs lg:text-sm font-semibold rounded-full hover:bg-neutral-800 transition-all shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
           >
-            Book a Call
+            Get Started
           </Link>
           <Link 
             href="#message" 
             className="px-5 py-2 lg:px-7 lg:py-3 border border-neutral-300 text-neutral-800 text-xs lg:text-sm font-semibold rounded-full hover:bg-neutral-50 transition-all"
           >
-            Send Message
+            Chat with AI
           </Link>
         </div>
 
@@ -174,11 +174,11 @@ export default function Navbar() {
 
               <motion.div variants={itemVariants} className="flex flex-col space-y-3 pt-2">
                 <Link 
-                  href="/booking" 
+                  href="/login" 
                   onClick={toggleMenu}
                   className="w-full text-center py-3 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition-all"
                 >
-                  Book a Call
+                  Get Started
                 </Link>
                 <Link 
                   href="#message" 

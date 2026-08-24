@@ -17,20 +17,20 @@ const poppins = Poppins({
 
 const beliefs = [
   {
-    title: "Understand the problem.",
-    description: "We dive deep into your processes to uncover the real bottlenecks before writing code."
+    title: "Hook with purpose.",
+    description: "In an endless feed, every first second and headline must captivate with undeniable value."
   },
   {
-    title: "Build for people.",
-    description: "Systems must adapt to human workflows, not force users into rigid templates."
+    title: "Authenticity wins algorithms.",
+    description: "Platforms reward organic retention and meaningful interactions over generic corporate noise."
   },
   {
-    title: "Keep it purposeful.",
-    description: "Every button, interaction, and database query must deliver tangible value."
+    title: "Relentless distribution.",
+    description: "Great ideas need consistent posting cadences and cross-platform adaptation to build true authority."
   },
   {
-    title: "Make it scalable.",
-    description: "We architect clean, modular codebases designed to support future operational growth."
+    title: "Metrics that drive revenue.",
+    description: "We optimize for audience retention, qualified pipeline leads, and brand equity — not vanity metrics."
   }
 ];
 
@@ -45,12 +45,12 @@ export default function AboutMe() {
           <div className="flex items-center gap-2">
             <span className="w-3.5 h-5 bg-[#00A3C4] rounded-r-full block" />
             <span className={`${poppins.className} text-xs md:text-sm font-semibold tracking-[0.2em] text-[#F3EBDD] uppercase`}>
-              Who Are We?
+              Who We Are
             </span>
           </div>
           
           <h2 className={`${robotoSlab.className} text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.5] tracking-normal`}>
-           We turn ideas into premium digital experiences built for real businesses and lasting growth.
+            We turn quiet brands into high-engagement authority figures across modern social feeds.
           </h2>
         </div>
 
@@ -81,7 +81,7 @@ export default function AboutMe() {
 
           {/* Secondary Bio Text */}
           <p className={`${poppins.className} text-base sm:text-lg text-[#F3EBDD]/80 font-light leading-relaxed max-w-[400px] mx-auto lg:mx-0`}>
-            We've led enterprise-scale initiatives including the rollout of a global design system and high-priority campaign work. We're recognized for speed, precision, and strategic thinking.
+            We've spearheaded viral campaigns, scaled organic followings into the millions, and crafted magnetic visual storytelling for ambitious founders, creators, and modern brands.
           </p>
         </div>
       </div>

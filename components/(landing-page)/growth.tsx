@@ -14,9 +14,9 @@ const poppins = Poppins({
 })
 
 const items = [
-    { image: '/growth/growth1.jpg', label: 'Disconnected Communication', link: '#' },
-    { image: '/growth/growth2.jpg', label: 'Manual Administration', link: '#' },
-    { image: '/growth/growth3.jpg', label: 'Scattered Tools', link: '#' },
+    { image: '/growth/growth1.jpg', label: 'Inconsistent Content', link: '#' },
+    { image: '/growth/growth2.jpg', label: 'Stagnant Engagement', link: '#' },
+    { image: '/growth/growth3.jpg', label: 'Unconverted Followers', link: '#' },
 ]
 
 export default function Growth() {
@@ -25,12 +25,12 @@ export default function Growth() {
             {/* Header section */}
             <div className="w-[90vw] mx-auto text-left">
                 <h2 className={`${robotoSlab.className} text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight text-neutral-900 leading-[1.1] mb-6`}>
-                    Growth <br />
-                    Outgrows <br />
-                    <span className="text-neutral-500">Traditional Systems.</span>
+                    Brands <br />
+                    Outgrow <br />
+                    <span className="text-neutral-500">Random Posting.</span>
                 </h2>
                 <p className={`${poppins.className} text-lg sm:text-xl md:text-2xl text-neutral-600 max-w-2xl font-light leading-relaxed`}>
-                   As campuses expand, managing admissions, academics, communication, and operations across disconnected tools becomes increasingly difficult.
+                   As your audience scales, managing content pipelines, changing algorithms, creative direction, and community interactions across platforms demands a unified strategy.
                 </p>
             </div>
 

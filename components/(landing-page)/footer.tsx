@@ -27,17 +27,17 @@ export default function Footer() {
 
         <div className="relative z-10 flex flex-col gap-4 max-w-3xl">
           <h2 className={`${robotoSlab.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight`}>
-            Have something <br /> worth building?
+            Ready to scale <br /> your social presence?
           </h2>
           <p className={`${poppins.className} text-lg sm:text-xl md:text-2xl font-light text-[#F3EBDD]/70 mt-2`}>
-            Let's build it.
+            Let's build your audience.
           </p>
         </div>
         <Link
           href="/booking"
           className={`${poppins.className} relative z-10 mt-4 px-8 py-4 bg-[#A67C3D] hover:bg-[#8f6b34] text-white text-base md:text-lg rounded-full font-semibold transition-all shadow-[0_4px_20px_rgba(166,124,61,0.3)] hover:shadow-[0_6px_25px_rgba(166,124,61,0.45)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2.5`}
         >
-          <span>Book a Call</span>
+          <span>Let's Get Started</span>
           <span>→</span>
         </Link>
       </div>
@@ -54,7 +54,7 @@ export default function Footer() {
             />
           </Link>
           <p className={`${poppins.className} text-xs md:text-sm text-[#F3EBDD]/50 font-light`}>
-            Turning complex workflows into purposeful digital experiences.
+            Transforming brand narratives into magnetic, high-converting social media experiences.
           </p>
         </div>
 
