@@ -63,20 +63,27 @@ export default function Footer() {
           <Link href="/" className="hover:text-[#A67C3D] transition-colors">
             Home
           </Link>
-          <Link href="#about" className="hover:text-[#A67C3D] transition-colors">
+          <Link href="/#about" className="hover:text-[#A67C3D] transition-colors">
             About
           </Link>
-          <Link href="#services" className="hover:text-[#A67C3D] transition-colors">
+          <Link href="/#services" className="hover:text-[#A67C3D] transition-colors">
             Services
           </Link>
-          <Link href="#contact" className="hover:text-[#A67C3D] transition-colors">
+          <Link href="/#contact" className="hover:text-[#A67C3D] transition-colors">
             Contact
+          </Link>
+          <Link href="/privacy" className="hover:text-[#A67C3D] transition-colors">
+            Privacy Policy
           </Link>
         </div>
 
-        {/* Copyright */}
-        <div className={`${poppins.className} text-xs text-[#F3EBDD]/40 text-center md:text-right`}>
-          © {new Date().getFullYear()} Omninode. All rights reserved.
+        {/* Copyright & Legal */}
+        <div className={`${poppins.className} text-xs text-[#F3EBDD]/40 text-center md:text-right flex flex-col sm:flex-row items-center gap-2 sm:gap-4`}>
+          <span>© {new Date().getFullYear()} Omninode. All rights reserved.</span>
+          <span className="hidden sm:inline text-[#F3EBDD]/20">•</span>
+          <Link href="/privacy" className="hover:text-[#A67C3D] transition-colors underline-offset-4 hover:underline">
+            Privacy Policy
+          </Link>
         </div>
       </div>
     </footer>
