@@ -129,7 +129,7 @@ export default function PrivacyContent() {
             <Link href="/" className="flex items-center gap-3 group">
               <img
                 src="/logo.png"
-                alt="Omninode Logo"
+                alt="chartes.tech Logo"
                 className="h-8 sm:h-10 w-auto object-contain brightness-0 invert transition-transform group-hover:scale-105"
               />
             </Link>
@@ -183,11 +183,11 @@ export default function PrivacyContent() {
             </div>
 
             <h1 className={`${robotoSlab.className} text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#F3EBDD]`}>
-              Omninode Privacy Policy
+              chartes.tech Privacy Policy
             </h1>
 
             <p className="text-base sm:text-lg text-[#F3EBDD]/70 font-light leading-relaxed">
-              At Omninode (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), protecting the integrity of your personal information, social media authorizations, brand media assets, and artificial intelligence workflows is a foundational commitment. This policy outlines our stringent privacy protocols, data safeguards, and legal compliance.
+              At chartes.tech (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), protecting the integrity of your personal information, social media authorizations, brand media assets, and artificial intelligence workflows is a foundational commitment. This policy outlines our stringent privacy protocols, data safeguards, and legal compliance.
             </p>
 
             {/* Document Metadata Badges */}
@@ -331,7 +331,7 @@ export default function PrivacyContent() {
                     <ExternalLink className="w-3.5 h-3.5 text-neutral-400" />
                   </Link>
                   <a
-                    href="mailto:privacy@omninode.ai"
+                    href="mailto:privacy@chartes.tech"
                     className="flex items-center justify-between px-3 py-2 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-700 text-xs font-medium border border-neutral-200/60 transition-colors"
                   >
                     <span>Contact Privacy Officer</span>
@@ -345,7 +345,7 @@ export default function PrivacyContent() {
             <div className="p-5 rounded-2xl bg-[#0D0D0D] text-[#F3EBDD] border border-neutral-800 space-y-3 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#A67C3D]">
                 <ShieldCheck className="w-4 h-4" />
-                <span>Omninode Privacy Pledge</span>
+                <span>chartes.tech Privacy Pledge</span>
               </div>
               <p className="text-xs text-[#F3EBDD]/70 leading-relaxed">
                 Your brand reputation is your greatest asset. We build automation tools with strict least-privilege principles so you always retain 100% ownership over your brand intellectual property and data.
@@ -369,20 +369,20 @@ export default function PrivacyContent() {
 
               <div className="space-y-4 text-sm sm:text-base">
                 <p>
-                  Welcome to <strong>Omninode</strong> (&quot;Omninode&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;), a premier brand growth, content generation, and social media automation technology platform. Omninode empowers creators, agencies, enterprise brands, and businesses to orchestrate high-converting social campaigns, automate scheduled publishing, generate AI-assisted multimedia content, and analyze performance metrics across multiple connected social networks.
+                  Welcome to <strong>chartes.tech</strong> (&quot;chartes.tech&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;), a premier brand growth, content generation, and social media automation technology platform. chartes.tech empowers creators, agencies, enterprise brands, and businesses to orchestrate high-converting social campaigns, automate scheduled publishing, generate AI-assisted multimedia content, and analyze performance metrics across multiple connected social networks.
                 </p>
                 <p>
-                  This Privacy Policy details how Omninode collects, processes, stores, protects, and discloses personal data and digital assets when you access our web application, mobile applications, APIs, content schedulers, and associated services (collectively, the &quot;Services&quot;).
+                  This Privacy Policy details how chartes.tech collects, processes, stores, protects, and discloses personal data and digital assets when you access our web application, mobile applications, APIs, content schedulers, and associated services (collectively, the &quot;Services&quot;).
                 </p>
                 <p>
-                  By creating an account, connecting third-party social media profiles, or otherwise utilizing our Services, you acknowledge that you have read, understood, and consented to the practices described in this Privacy Policy. If you do not agree with any terms within this policy, please terminate use of the Services immediately and disconnect any linked third-party authorizations.
+                  By registering an account, connecting social media channels, or interacting with our platform in any manner, you acknowledge having read and understood the practices described herein.
                 </p>
-              </div>
 
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-900 text-xs sm:text-sm flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="font-semibold text-amber-950">Scope Note:</strong> This Privacy Policy applies to data processed by Omninode as a Data Controller and, where applicable under data processing agreements with enterprise teams, as a Data Processor on behalf of our business clients.
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-900 text-xs sm:text-sm flex items-start gap-3 leading-relaxed">
+                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-semibold text-amber-950">Scope Note:</strong> This Privacy Policy applies to data processed by chartes.tech as a Data Controller and, where applicable under data processing agreements with enterprise teams, as a Data Processor on behalf of our business clients.
+                  </div>
                 </div>
               </div>
             </section>
@@ -403,17 +403,17 @@ export default function PrivacyContent() {
                   <div className="font-semibold text-neutral-900">Personal Data</div>
                   <div className="text-neutral-600">Any information relating to an identified or identifiable natural person, including names, email addresses, IP addresses, and account credentials.</div>
                 </div>
-                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/60 space-y-1.5">
-                  <div className="font-semibold text-neutral-900">OAuth Credentials & Tokens</div>
-                  <div className="text-neutral-600">Encrypted authorization keys issued by third-party platforms (e.g. Meta, LinkedIn, Google) allowing Omninode to publish posts and fetch analytics on your behalf.</div>
+                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                  <div className="font-semibold text-neutral-900 text-sm mb-1">OAuth Token Vault</div>
+                  <div className="text-neutral-600">Encrypted authorization keys issued by third-party platforms (e.g. Meta, LinkedIn, Google) allowing chartes.tech to publish posts and fetch analytics on your behalf.</div>
                 </div>
-                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/60 space-y-1.5">
-                  <div className="font-semibold text-neutral-900">User Content</div>
-                  <div className="text-neutral-600">Media files, imagery, video reels, captions, hashtags, schedule calendars, and campaign drafts uploaded or generated inside the Omninode platform.</div>
+                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                  <div className="font-semibold text-neutral-900 text-sm mb-1">Brand Media & Content Assets</div>
+                  <div className="text-neutral-600">Media files, imagery, video reels, captions, hashtags, schedule calendars, and campaign drafts uploaded or generated inside the chartes.tech platform.</div>
                 </div>
-                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/60 space-y-1.5">
-                  <div className="font-semibold text-neutral-900">Sub-Processor</div>
-                  <div className="text-neutral-600">Third-party service providers engaged by Omninode to provide hosting, database storage, email delivery, AI inference, and billing processing under strict contractual terms.</div>
+                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                  <div className="font-semibold text-neutral-900 text-sm mb-1">Sub-Processors</div>
+                  <div className="text-neutral-600">Third-party service providers engaged by chartes.tech to provide hosting, database storage, email delivery, AI inference, and billing processing under strict contractual terms.</div>
                 </div>
               </div>
             </section>
@@ -559,48 +559,45 @@ export default function PrivacyContent() {
 
               <div className="space-y-4 text-sm sm:text-base">
                 <p>
-                  Omninode interacts with official developer APIs provided by social networks. Our usage of data received from these APIs adheres strictly to each platform&apos;s developer terms and user data policies:
+                  chartes.tech interacts with official developer APIs provided by social networks. Our usage of data received from these APIs adheres strictly to each platform&apos;s developer terms and user data policies:
                 </p>
 
-                <div className="space-y-3">
-                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-2">
-                    <div className="font-semibold text-neutral-900 text-sm flex items-center justify-between">
-                      <span>Meta Platforms (Instagram Graph API & Facebook Pages API)</span>
-                      <span className="text-[11px] bg-neutral-200 px-2 py-0.5 rounded text-neutral-700 font-mono">Meta Verified</span>
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                    <div className="font-semibold text-neutral-900 text-sm flex items-center gap-2 mb-1">
+                      <span>Meta Platforms (Instagram & Facebook Graph APIs)</span>
                     </div>
-                    <p className="text-xs text-neutral-600">
-                      Omninode accesses Instagram and Facebook data solely to publish media, read basic profile information, and collect page analytics authorized by you. We do not access private direct messages or personal friends lists. All Meta platform terms and developer policies are strictly respected.
+                    <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
+                      chartes.tech accesses Instagram and Facebook data solely to publish media, read basic profile information, and collect page analytics authorized by you. We do not access private direct messages or personal friends lists. All Meta platform terms and developer policies are strictly respected.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-2">
-                    <div className="font-semibold text-neutral-900 text-sm flex items-center justify-between">
-                      <span>Google & YouTube API Services</span>
-                      <span className="text-[11px] bg-neutral-200 px-2 py-0.5 rounded text-neutral-700 font-mono">OAuth 2.0</span>
+                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                    <div className="font-semibold text-neutral-900 text-sm flex items-center gap-2 mb-1">
+                      <span>Google API Services & YouTube API Services</span>
                     </div>
-                    <p className="text-xs text-neutral-600">
-                      Omninode&apos;s use and transfer to any other app of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" className="text-[#A67C3D] underline underline-offset-2">Google API Services User Data Policy</a>, including the Limited Use requirements.
+                    <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
+                      chartes.tech&apos;s use and transfer to any other app of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" className="text-[#A67C3D] underline underline-offset-2">Google API Services User Data Policy</a>, including the Limited Use requirements.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-2">
-                    <div className="font-semibold text-neutral-900 text-sm flex items-center justify-between">
+                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                    <div className="font-semibold text-neutral-900 text-sm flex items-center gap-2 mb-1">
                       <span>LinkedIn Marketing Developer Platform</span>
-                      <span className="text-[11px] bg-neutral-200 px-2 py-0.5 rounded text-neutral-700 font-mono">LinkedIn API</span>
                     </div>
-                    <p className="text-xs text-neutral-600">
-                      We use LinkedIn APIs exclusively to share organization updates, publish professional articles, and retrieve engagement analytics as permitted under LinkedIn Developer Agreements.
+                    <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
+                      We access LinkedIn company pages and professional profiles only to publish approved status updates, articles, and retrieve organic performance metrics.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-neutral-900 text-[#F3EBDD] space-y-2">
-                  <div className="font-semibold text-sm text-[#A67C3D] flex items-center gap-2">
+                <div className="p-4 rounded-xl bg-neutral-900 text-[#F3EBDD] text-xs sm:text-sm">
+                  <div className="font-semibold text-[#A67C3D] mb-1 flex items-center gap-2">
                     <Key className="w-4 h-4" />
-                    <span>Instant Revocation & Token Deletion</span>
+                    <span>User Token Revocation & Isolation</span>
                   </div>
-                  <p className="text-xs text-[#F3EBDD]/80 leading-relaxed">
-                    You maintain complete sovereignty over your social integrations. You can disconnect any social network at any moment through the <Link href="/connected-accounts" className="text-[#A67C3D] underline underline-offset-2 font-medium">Connected Accounts page</Link> or by revoking Omninode&apos;s permissions directly inside the security settings of Instagram, Facebook, Google, or LinkedIn. Upon disconnection, all stored tokens are permanently erased from our active databases.
+                  <p className="text-neutral-300">
+                    You maintain complete sovereignty over your social integrations. You can disconnect any social network at any moment through the <Link href="/connected-accounts" className="text-[#A67C3D] underline underline-offset-2 font-medium">Connected Accounts page</Link> or by revoking chartes.tech&apos;s permissions directly inside the security settings of Instagram, Facebook, Google, or LinkedIn. Upon disconnection, all stored tokens are permanently erased from our active databases.
                   </p>
                 </div>
               </div>
@@ -619,30 +616,27 @@ export default function PrivacyContent() {
 
               <div className="space-y-4 text-sm sm:text-base">
                 <p>
-                  Omninode incorporates advanced generative artificial intelligence to assist users in crafting compelling social copy, generating campaign concepts, and automating workflow schedules. We enforce rigorous ethical AI policies:
+                  chartes.tech incorporates advanced generative artificial intelligence to assist users in crafting compelling social copy, generating campaign concepts, and automating workflow schedules. We enforce rigorous ethical AI policies:
                 </p>
 
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3 p-3 rounded-xl bg-neutral-50 border border-neutral-200/60">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-neutral-900 font-semibold">No Public Model Training on Private Data:</strong> We do not utilize your proprietary brand assets, confidential draft captions, or internal strategy notes to train public foundational AI models without your explicit opt-in consent.
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                    <div className="font-semibold text-neutral-900 text-sm mb-1">No AI Training on Private Assets</div>
+                    <div className="text-neutral-600 text-xs sm:text-sm">
+                      We do <strong>NOT</strong> use your proprietary brand media, confidential creative prompts, private captions, or customer data to train public LLM models (e.g. OpenAI, Anthropic) without explicit written agreement.
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 p-3 rounded-xl bg-neutral-50 border border-neutral-200/60">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-neutral-900 font-semibold">Zero-Data-Retention Agreements:</strong> Inference requests dispatched to enterprise AI infrastructure providers (such as OpenAI Enterprise or Anthropic API) operate under strict commercial agreements ensuring inputs and outputs are not retained or utilized for model enhancement.
+                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200">
+                    <div className="font-semibold text-neutral-900 text-sm mb-1">Zero-Retention API Processing</div>
+                    <div className="text-neutral-600 text-xs sm:text-sm">
+                      Prompts and content sent to enterprise AI inference providers are subject to strict zero-data-retention (ZDR) agreements preventing long-term caching or secondary processing.
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-start gap-3 p-3 rounded-xl bg-neutral-50 border border-neutral-200/60">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-neutral-900 font-semibold">Human-in-the-Loop Safeguards:</strong> Omninode provides manual review stages allowing you to inspect, edit, or reject any AI-generated social media post prior to scheduled dispatch.
-                    </div>
-                  </div>
+                <div className="text-neutral-600 text-xs sm:text-sm">
+                  <strong className="text-neutral-900 font-semibold">Human-in-the-Loop Safeguards:</strong> chartes.tech provides manual review stages allowing you to inspect, edit, or reject any AI-generated social media post prior to scheduled dispatch.
                 </div>
               </div>
             </section>
@@ -760,7 +754,7 @@ export default function PrivacyContent() {
 
               <div className="space-y-4 text-sm sm:text-base">
                 <p>
-                  Omninode maintains multi-layered technical, physical, and administrative safeguards designed to protect your personal information against unauthorized access, destruction, loss, or disclosure:
+                  chartes.tech maintains multi-layered technical, physical, and administrative safeguards designed to protect your personal information against unauthorized access, destruction, loss, or disclosure:
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -823,19 +817,16 @@ export default function PrivacyContent() {
                   We retain personal data only for as long as your account remains active or as required to fulfill the purposes outlined in this policy, unless a longer retention duration is required by law (such as statutory financial audit laws).
                 </p>
 
-                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 space-y-3">
-                  <h4 className="font-bold text-neutral-900 text-sm flex items-center gap-2">
-                    <Trash2 className="w-4 h-4 text-rose-600" />
-                    <span>Permanent Account Erasure Protocol</span>
-                  </h4>
-                  <p className="text-xs text-neutral-600 leading-relaxed">
-                    When you request account termination, Omninode executes a comprehensive deletion routine:
+                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 space-y-2">
+                  <div className="font-semibold text-neutral-900 text-sm">Account Deletion & Content Purge</div>
+                  <p className="text-neutral-600 text-xs sm:text-sm">
+                    When you request account termination, chartes.tech executes a comprehensive deletion routine:
                   </p>
-                  <ul className="list-disc list-inside text-xs text-neutral-600 space-y-1 ml-2">
-                    <li>All active OAuth connection tokens and refresh keys are immediately revoked and permanently purged.</li>
-                    <li>Uploaded media files and scheduled drafts are deleted from our servers and media delivery storage.</li>
-                    <li>Personal identifying records are wiped from active databases within <strong>30 calendar days</strong>.</li>
-                    <li>Aggregated, fully anonymized analytical telemetry (which cannot identify any natural person) may be retained for macro performance benchmarking.</li>
+                  <ul className="list-disc pl-5 space-y-1 text-xs text-neutral-600">
+                    <li>Social authentication tokens and secret credentials are permanently purged from database vaults immediately.</li>
+                    <li>Uploaded brand media assets stored on CDN buckets are scheduled for permanent eradication within 30 calendar days.</li>
+                    <li>Automated publishing queues, post schedules, and analytics caches are permanently eliminated.</li>
+                    <li>Aggregated, anonymized statistical records stripped of personal identifiers may be retained for platform performance benchmarking.</li>
                   </ul>
                 </div>
               </div>
@@ -880,11 +871,11 @@ export default function PrivacyContent() {
 
                 <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
                   <a
-                    href="mailto:privacy@omninode.ai?subject=Data%20Subject%20Request%20(Privacy%20Rights)"
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-[#0D0D0D] hover:bg-neutral-800 text-[#F3EBDD] text-xs sm:text-sm font-semibold transition-all text-center flex items-center justify-center gap-2"
+                    href="mailto:privacy@chartes.tech"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#A67C3D]/10 hover:bg-[#A67C3D]/20 text-[#A67C3D] font-medium transition-all"
                   >
-                    <Mail className="w-4 h-4 text-[#A67C3D]" />
-                    <span>Submit Privacy Rights Request</span>
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>privacy@chartes.tech</span>
                   </a>
                   <span className="text-xs text-neutral-500">Responses delivered within 30 calendar days at zero cost.</span>
                 </div>
@@ -914,7 +905,7 @@ export default function PrivacyContent() {
                 </ul>
 
                 <p className="text-xs text-neutral-500 pt-1">
-                  You can configure your browser to reject cookies or notify you when cookies are set. Please note that disabling essential cookies may impact core functionalities of the Omninode web application.
+                  You can configure your browser to reject cookies or notify you when cookies are set. Please note that disabling essential cookies may impact core functionalities of the chartes.tech web application.
                 </p>
               </div>
             </section>
@@ -932,7 +923,7 @@ export default function PrivacyContent() {
 
               <div className="space-y-4 text-sm sm:text-base">
                 <p>
-                  Omninode operates globally. Information collected about you may be transferred to, stored, and processed in the United States and other countries where our cloud sub-processors maintain server facilities.
+                  chartes.tech operates globally. Information collected about you may be transferred to, stored, and processed in the United States and other countries where our cloud sub-processors maintain server facilities.
                 </p>
                 <p>
                   When transferring personal data originating in the European Economic Area (EEA), the United Kingdom, or Switzerland to countries without an Adequacy Decision by the European Commission, we implement robust cross-border transfer mechanisms, including the European Commission&apos;s approved <strong>Standard Contractual Clauses (SCCs)</strong> and supplementary security measures.
@@ -953,10 +944,10 @@ export default function PrivacyContent() {
 
               <div className="space-y-4 text-sm sm:text-base">
                 <p>
-                  Omninode Services are strictly intended for professional creators, businesses, and individuals who are at least <strong>18 years of age</strong> (or the legal age of majority in your jurisdiction). We do not knowingly solicit, collect, or process personal data from children under the age of 13 (or under 16 where local law mandates).
+                  chartes.tech Services are strictly intended for professional creators, businesses, and individuals who are at least <strong>18 years of age</strong> (or the legal age of majority in your jurisdiction). We do not knowingly solicit, collect, or process personal data from children under the age of 13 (or under 16 where local law mandates).
                 </p>
                 <p>
-                  If we discover that a minor under the minimum legal age has registered an account or provided personal details to Omninode, we will take immediate steps to terminate the account and permanently purge the associated data. If you believe a child has provided us with personal information, please contact us immediately at <a href="mailto:privacy@omninode.ai" className="text-[#A67C3D] font-medium underline">privacy@omninode.ai</a>.
+                  If we discover that a minor under the minimum legal age has registered an account or provided personal details to chartes.tech, we will take immediate steps to terminate the account and permanently purge the associated data. If you believe a child has provided us with personal information, please contact us immediately at <a href="mailto:privacy@chartes.tech" className="text-[#A67C3D] font-medium underline">privacy@chartes.tech</a>.
                 </p>
               </div>
             </section>
@@ -977,7 +968,7 @@ export default function PrivacyContent() {
                   We may periodically revise this Privacy Policy to reflect enhancements to our platform features, changes in legal frameworks, or updates to social media API developer agreements.
                 </p>
                 <p>
-                  When material modifications occur, we will notify you through prominent in-app dashboard notices, an update to the &quot;Last Updated&quot; date at the top of this document, or direct email notifications to your registered email address at least <strong>30 days</strong> prior to the effective date of such changes. Continued use of Omninode following the effective date constitutes acceptance of the revised terms.
+                  When material modifications occur, we will notify you through prominent in-app dashboard notices, an update to the &quot;Last Updated&quot; date at the top of this document, or direct email notifications to your registered email address at least <strong>30 days</strong> prior to the effective date of such changes. Continued use of chartes.tech following the effective date constitutes acceptance of the revised terms.
                 </p>
               </div>
             </section>
@@ -1000,22 +991,20 @@ export default function PrivacyContent() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 space-y-2">
-                    <div className="text-xs font-semibold text-[#A67C3D] uppercase tracking-wider">Privacy & Legal Operations</div>
-                    <div className="text-sm font-medium text-white">Omninode Global Privacy Team</div>
-                    <div className="text-xs text-[#F3EBDD]/60 space-y-1">
-                      <div>Email: <a href="mailto:privacy@omninode.ai" className="text-[#A67C3D] hover:underline">privacy@omninode.ai</a></div>
-                      <div>Legal: <a href="mailto:legal@omninode.ai" className="text-[#A67C3D] hover:underline">legal@omninode.ai</a></div>
-                      <div>Response Window: 24–48 Business Hours</div>
+                    <div className="text-sm font-medium text-white">chartes.tech Global Privacy Team</div>
+                    <div className="text-xs text-neutral-400 space-y-1">
+                      <div>Email: <a href="mailto:privacy@chartes.tech" className="text-[#A67C3D] hover:underline">privacy@chartes.tech</a></div>
+                      <div>Legal: <a href="mailto:legal@chartes.tech" className="text-[#A67C3D] hover:underline">legal@chartes.tech</a></div>
+                      <div>Address: 100 Montgomery St, Suite 1200, San Francisco, CA 94104</div>
                     </div>
                   </div>
 
                   <div className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 space-y-2">
-                    <div className="text-xs font-semibold text-[#A67C3D] uppercase tracking-wider">Data Protection Officer (DPO)</div>
-                    <div className="text-sm font-medium text-white">Office of Data Governance</div>
-                    <div className="text-xs text-[#F3EBDD]/60 space-y-1">
-                      <div>Attn: Data Protection Officer</div>
-                      <div>Inquiry Email: <a href="mailto:dpo@omninode.ai" className="text-[#A67C3D] hover:underline">dpo@omninode.ai</a></div>
-                      <div>Jurisdiction: EU / US / Global Operations</div>
+                    <div className="text-sm font-medium text-white">Data Protection Officer (DPO)</div>
+                    <div className="text-xs text-neutral-400 space-y-1">
+                      <div>Attention: Data Protection Officer / Privacy Office</div>
+                      <div>Inquiry Email: <a href="mailto:dpo@chartes.tech" className="text-[#A67C3D] hover:underline">dpo@chartes.tech</a></div>
+                      <div>EU Representative: European Privacy Services Ltd, Dublin, Ireland</div>
                     </div>
                   </div>
                 </div>
