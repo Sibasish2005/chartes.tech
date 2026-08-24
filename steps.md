@@ -17,7 +17,7 @@ Custom Session Auth System  ✅ DONE (bcryptjs, crypto session tokens, HTTP-only
        ↓
 Email Signup & Login APIs   ✅ DONE (`/api/auth/signup`, `/api/auth/signin`)
        ↓
-Google OAuth 2.0 / OIDC     ✅ DONE (`/api/auth/google`, `/api/auth/google/callback`)
+Google OAuth 2.0 / OIDC     ✅ DONE (`/api/auth/google`, `/api/auth/google/callback`, redirect URI guides)
        ↓
 Logout Flow & Component     ✅ DONE (`/api/auth/logout`, `LogoutButton`)
        ↓
@@ -31,7 +31,9 @@ Post Composer UI & Drafts   ✅ DONE (`/create-post`, live preview, ImageKit upl
        ↓
 End-to-End Zod Validation   ✅ DONE (`lib/validations/`, API routes & client forms)
        ↓
-Social Account Connections  🔄 NEXT STEP (Facebook / Instagram / LinkedIn OAuth)
+Connected Accounts Hub      ✅ DONE (`/connected-accounts` UI & provider connection cards)
+       ↓
+Social OAuth Integrations   🔄 NEXT STEP (Facebook / Instagram Graph API / LinkedIn OAuth 2.0)
        ↓
 Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
 ```
@@ -63,6 +65,7 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
 - **Prisma Configuration (`prisma.config.ts` & `lib/prisma.ts`):**
   - Generated output path: `lib/generated/prisma`.
   - Driver adapter instantiation (`PrismaPg`) with global singleton caching for Next.js hot-reloading.
+  - Build pipeline automation: Added `postinstall: "prisma generate"` and `build: "prisma generate && next build"` in `package.json` to guarantee generated client presence during builds.
 - **Prisma Schema (`prisma/schema.prisma`):**
   - **`User`**: `id` (CUID), `name`, `email` (unique), `passwordHash`, `createdAt`, `updatedAt`.
   - **`Account`**: OAuth accounts (`provider`, `providerAccountId`, `accessToken`, `refreshToken`, `expiresAt`, relational cascade to `User`).
@@ -107,6 +110,9 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
   - Auto-provisions new `User` record if email is unregistered.
   - Upserts `Account` record with provider `google`, `providerAccountId`, and `accessToken`.
   - Generates an active application session, issues HTTP-only cookie, and redirects user to `/automation`.
+- **OAuth URI Configuration Reference:**
+  - `GOOGLE_REDIRECT_URI` in `.env` configured to callback URL (e.g. `http://localhost:3000/api/auth/google/callback` or `https://chartes.tech/api/auth/google/callback`).
+  - Matching URI registered under Google Cloud Console's **Authorised redirect URIs**.
 
 ---
 
@@ -178,18 +184,29 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
 
 ---
 
+### STEP 10 — Connected Accounts Hub & Build Integrity ✅
+- **Connected Accounts UI (`/connected-accounts`):**
+  - Server-rendered page with session protection via `getCurrentUser()`.
+  - Queries active user's connected `Account` records from PostgreSQL.
+  - Displays interactive connection status cards for **Google**, **Instagram**, **Facebook**, and **LinkedIn**.
+- **Build & CI Pipeline Integrity:**
+  - Configured `prisma generate` in `package.json` `postinstall` and `build` scripts.
+  - Verified clean Next.js 16 (Turbopack) build and TypeScript type-checking across all 17 routes.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 10 — Social Account Connections & OAuth Tokens**
+1. **[ ] Step 11 — Social OAuth Integrations & Token Storage**
    - Connect Facebook Graph API / Instagram Graph API OAuth flows.
    - Connect LinkedIn OAuth 2.0 flow.
    - Store access tokens in `Account` model for automated publishing.
 
-2. **[ ] Step 11 — Automated Scheduling & Publishing Worker**
+2. **[ ] Step 12 — Automated Scheduling & Publishing Worker**
    - Background worker / Cron job (e.g. Vercel Cron, QStash, or background polling) to process scheduled posts.
    - Dispatch posts to respective social media platform APIs.
    - Update `PostStatus` and `PlatformPostStatus` (`PUBLISHED` or `FAILED`).
 
-3. **[ ] Step 12 — Dashboard Analytics & Post Feed Integration**
+3. **[ ] Step 13 — Dashboard Analytics & Post Feed Integration**
    - Fetch real posts from PostgreSQL in `/automation` dashboard.
    - Update live stat counters (Total, Published, Scheduled, Failed) based on DB aggregations.
