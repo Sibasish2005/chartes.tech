@@ -315,26 +315,59 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ---
 
+---
+
 ### STEP 18 — Monochrome Connected Accounts & Auth Navigation Optimization ✅
 - **Monochrome Lucide React Icon System (`app/connected-accounts/page.tsx`):**
-  - Upgraded account cards with clean monochrome icon badges (`Briefcase` for LinkedIn, `ShieldCheck` for Google SSO, `Camera` for Instagram, `Users` for Facebook).
+  - Replaced colorful brand tiles with clean, minimalist monochrome icon badges (`Briefcase` for LinkedIn, `ShieldCheck` for Google SSO, `Camera` for Instagram, `Users` for Facebook Pages).
+  - Standardized micro-borders (`#EAE3D9`) and muted surface tiles (`#FAF8F5`).
 - **Session-Aware Landing Page CTAs (`components/(landing-page)/navbar.tsx` & `app/page.tsx`):**
-  - Dynamically routes logged-in users directly to "Dashboard" (`/automation`) while showing "Get Started" (`/login`) to guests.
-- **Session Verification Endpoint & Auth Page Guards (`GET /api/auth/me`):**
-  - Added session status endpoint and client-side listeners on `/login` and `/signup` to redirect authenticated users automatically.
+  - Server-rendered session check via `getCurrentUser()` passes `isLoggedIn` flag to navigation components.
+  - Dynamically routes logged-in users directly to **Dashboard** (`/automation`) while showing **Get Started** (`/login`) to guest visitors.
+  - Applied consistently across desktop navbar and animated mobile drawer.
+- **Session Status Endpoint & Auth Guards (`GET /api/auth/me`):**
+  - Created session verification endpoint returning `{ authenticated: boolean, user: { id, email, name } }`.
+  - Added client-side redirect guards on `/login` and `/signup` to immediately route active sessions to `/automation`.
+
+---
+
+### STEP 19 — Social Account Disconnection Engine & SSO Decoupling ✅
+- **Account Disconnection API (`POST /api/social/disconnect`):**
+  - Validates active session and user ownership before modifying credentials.
+  - Deletes target provider record from Prisma `Account` table (`where: { userId, provider }`).
+  - Automatically unlinks OAuth tokens, revoking publishing access while keeping user account intact.
+- **Interactive Disconnection UI (`components/accounts/ConnectedAccountsGrid.tsx`):**
+  - Added dedicated **Disconnect** action next to active social media accounts (LinkedIn).
+  - Integrated themed confirmation modal powered by official shadcn `Dialog`:
+    - Displays provider icon, name, and cautionary message regarding paused automations.
+    - Prevents accidental disconnections with explicit `Cancel` and `Disconnect` buttons with loading spinners.
+  - Optimistically updates UI state upon confirmation without requiring a full browser reload.
+- **SSO Account Guarding:**
+  - Decoupled Google authentication card from social publishing actions: removed Disconnect/Connect buttons to prevent users from bricking their primary SSO login, displaying an informational **Active Sign-in** / **Email Sign-in** badge instead.
+
+---
+
+### STEP 20 — Global Typography & Portal Typography Standardization ✅
+- **Application-Wide Typography (`app/layout.tsx`):**
+  - Replaced `Geist` with **Plus Jakarta Sans** (`Plus_Jakarta_Sans` from `next/font/google`) globally on `<html>` and `<body>`.
+  - Configured font variables and subsets (`latin`, weights 300-800) for cross-platform rendering.
+- **Base-UI & Radix Portal Styling (`components/ui/dialog.tsx`):**
+  - Explicitly injected `fontSans.className` into `DialogContent` to prevent portaled DOM elements from falling back to browser serif defaults.
+  - Restyled modals with subtle parchment borders (`#EAE3D9`), soft backdrop blur (`bg-black/40 backdrop-blur-xs`), and refined pill buttons.
 
 ---
 
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 19 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+1. **[ ] Step 21 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
    - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
    - Exchange short-lived token for long-lived page access tokens.
    - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 20 — Automation Cron Trigger / Background Queue Monitoring**
+2. **[ ] Step 22 — Automation Cron Trigger / Background Queue Monitoring**
    - Configure external periodic trigger (e.g. Vercel Cron or QStash) to call `GET /api/cron/publish` with `CRON_SECRET`.
    - Add queue throttling and retry backoff mechanics.
+
 
 
 

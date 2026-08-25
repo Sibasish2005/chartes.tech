@@ -169,6 +169,7 @@ export async function GET(request: NextRequest) {
             },
 
             update: {
+                userId: session.userId,
                 accessToken,
                 expiresAt,
             },
