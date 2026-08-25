@@ -1,4 +1,4 @@
-import { NextResponse,NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getUploadAuthParams } from "@imagekit/next/server";
 import { getCurrentUser } from "@/lib/auth";
 

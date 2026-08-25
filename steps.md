@@ -9,6 +9,8 @@ This document provides a comprehensive log of all implementation steps, architec
 ```
 Landing Page & Visuals      ✅ DONE (Lenis, GSAP, Framer Motion, AccordionGallery)
        ↓
+Mobile UX & Lenis Tuning     ✅ DONE (Mobile scroll rate, full-bleed gallery, real navbar anchors)
+       ↓
 Dashboard UI (`/automation`) ✅ DONE (Stats Cards, Recent Posts, Auth Guards)
        ↓
 Database & ORM Setup        ✅ DONE (PostgreSQL + Prisma 7 + Driver Adapter)
@@ -37,9 +39,13 @@ Privacy Policy & Legal Hub  ✅ DONE (`/privacy`, `/privacy-policy`, GDPR/CCPA c
        ↓
 LinkedIn OAuth 2.0 Engine   ✅ DONE (`/api/social/linkedin`, `/api/social/linkedin/callback`, OpenID Connect)
        ↓
+Favicon & High-DPI Icons    ✅ DONE (`app/layout.tsx`, `app/favicon.ico`, `icon.png`, `apple-icon.png`)
+       ↓
+LinkedIn Publishing Engine  ✅ DONE (`lib/automation/`, REST API `/rest/posts`, live verified)
+       ↓
 Meta (FB/IG) Graph API      🔄 NEXT STEP (Instagram & Facebook Pages OAuth & Tokens)
        ↓
-Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
+Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers)
 ```
 
 ---
@@ -228,19 +234,107 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
 
 ---
 
+### STEP 13 — Mobile UX Tuning, Navbar Routing, Gallery Optimization & Favicon System ✅
+- **Lenis Smooth Scroll Mobile Calibration (`components/SmoothScroll.tsx`):**
+  - Added responsive viewport detection via `window.matchMedia("(max-width: 768px)")`.
+  - Tuned mobile `touchMultiplier` down from `1.5` to `0.65` for steady, comfortable touch-swiping.
+  - Increased mobile scroll easing duration to `2.0s` and wheel multiplier to `0.7` for fluid deceleration.
+- **Navbar Real Routing & Smooth Section Links (`components/(landing-page)/navbar.tsx`):**
+  - Updated desktop navigation and mobile drawer links to point to real paths and section anchors:
+    - **Home:** `/`
+    - **About:** `/#about`
+    - **Services:** `/#services`
+    - **Solutions:** `/#solutions`
+    - **Contact:** `/#contact`
+    - **Get Started:** `/login`
+    - **Book a Call:** `/booking`
+  - Added corresponding `id` attributes across landing page section components (`aboutMe.tsx`, `services.tsx`, `solutions.tsx`, `footer.tsx`).
+- **Growth Accordion Gallery Touch Fix & Full-Bleed Sizing (`components/AccordionGallery.tsx` & `growth.tsx`):**
+  - Removed dummy `link: '#'` properties to prevent unintended `/` page-top redirects on mobile card taps.
+  - Added `hasLink` check and `e.preventDefault()` safeguards to prevent URL hash mutations when expanding cards.
+  - Fixed mobile letterboxing: replaced fixed pixel widths with `w-full h-full min-w-full min-h-full` and subtle scaling (`1.05x`) so images cover 100% of each panel without black borders.
+- **Favicon & High-DPI App Icon System (`app/layout.tsx`):**
+  - Configured comprehensive `icons` metadata in RootLayout supporting standard `.ico`, high-DPI `.png`, shortcut, and Apple Touch Icon.
+  - Generated and synchronized `app/favicon.ico`, `app/icon.png`, and `app/apple-icon.png` from brand assets.
+
+---
+
+### STEP 14 — LinkedIn Publishing Engine & Automation Worker ✅
+- **LinkedIn Direct REST API Publisher (`lib/automation/publisher/linkedin.ts`):**
+  - Targets LinkedIn REST API `POST https://api.linkedin.com/rest/posts` with version `202601` and Restli protocol `2.0.0`.
+  - Dynamically constructs author URN payload `urn:li:person:${providerAccountId}` using authenticated tokens.
+  - Implements commentary publishing, error parsing, and extracts returned `x-restli-id` external post identifier.
+- **Scheduled Automation Worker (`lib/automation/worker.ts`):**
+  - Queries scheduled posts from PostgreSQL (`Post` with `SCHEDULED` status and `scheduledAt <= now`).
+  - Iterates through connected platforms per post, skipping already published platforms.
+  - Automatically fetches linked OAuth tokens from `Account` table.
+  - Updates individual `PostPlatform` records to `PUBLISHED` (with `publishedAt` timestamp) or `FAILED`.
+  - Cascades overall post status to `PUBLISHED` when all target platforms succeed, or `FAILED` when errors occur.
+- **Live Publishing Verification Route (`GET /api/test`):**
+  - Validates active session via `getCurrentUser()`.
+  - Loads connected LinkedIn account and verifies access token existence.
+  - Dispatches test publication to live LinkedIn feed.
+### STEP 15 — LinkedIn Media Publishing & Timing Controls Engine ✅
+- **LinkedIn 2-Step Image Media Publishing (`lib/automation/publisher/linkedin.ts`):**
+  - Implemented automatic image asset fetching from ImageKit CDN (`fetch -> arrayBuffer()`).
+  - Added LinkedIn REST Images API upload handshake:
+    - Step 1: `POST https://api.linkedin.com/rest/images?action=initializeUpload` to obtain upload URL and `urn:li:image:...` URN.
+    - Step 2: Binary `PUT` stream to LinkedIn's media upload URL.
+  - Attached `content.media` block (`{ id: imageUrn, title: "Post Image" }`) into `POST /rest/posts` payload.
+  - Live tested image publication: verified `urn:li:image:D5610AQH186w4RzCZrA` created and published as post `urn:li:share:7498005318291873792`.
+- **Post Scheduling & Timing Controls (`app/create-post/page.tsx` & `app/api/posts/route.ts`):**
+  - Added dedicated **[Publish Now]** and **[Schedule Timing]** action buttons with clean toggle controls.
+  - Integrated Date Picker and Time Picker with live preview of release timestamps.
+  - Added `scheduledAt` field across Redux draft slice, Zod validator, Prisma persistence, and worker immediate/future execution triggers.
+
+---
+
+### STEP 16 — Typography & Subtle Aesthetic Refinement ✅
+- **Font System Migration (`Plus_Jakarta_Sans`):**
+  - Migrated typography across the application navigation shell, dashboard, and composer to `Plus_Jakarta_Sans` for modern readability and crisp rendering.
+- **Calibrated Subtle Parchment Palette:**
+  - Ambient Canvas: `#F8F6F2` soft warm tone.
+  - Surfaces & Sidebars: `#FAF8F5` off-white parchment.
+  - Cards & Modals: `#FFFFFF` with delicate `#EAE3D9` micro-borders and soft micro-shadows.
+  - Action Controls: `#18181B` deep charcoal primary buttons with subtle status indicator pills.
+- **Responsive Layout & Mobile Drawer (`components/layout/AppSidebar.tsx` & `AppLayout.tsx`):**
+  - Unified desktop fixed sidebar with animated Framer Motion mobile hamburger drawer.
+
+---
+
+### STEP 17 — Post Management, Scrollable History & Shadcn Deletion Confirmation ✅
+- **Top-3 Visible Viewport with Smooth Scrolling (`components/dashboard/RecentPostsList.tsx`):**
+  - Compacted the recent posts dashboard section to display the top 3 items with scrollable overflow (`max-h-[235px] overflow-y-auto`).
+- **Official Shadcn Dialog Deletion Modal (`components/ui/dialog.tsx`):**
+  - Installed and styled official Radix-powered shadcn `Dialog` component.
+  - Integrated per-row trash actions with confirmation popup, item preview thumbnail, and loading indicators.
+- **Secure Backend Deletion Route (`DELETE /api/posts/[id]`):**
+  - Validates session ownership against `userId` and deletes records with cascade.
+- **SSR Hydration Resolution:**
+  - Solved locale divergence mismatch using deterministic date formatting (`formatDate`) and `suppressHydrationWarning`.
+
+---
+
+### STEP 18 — Monochrome Connected Accounts & Auth Navigation Optimization ✅
+- **Monochrome Lucide React Icon System (`app/connected-accounts/page.tsx`):**
+  - Upgraded account cards with clean monochrome icon badges (`Briefcase` for LinkedIn, `ShieldCheck` for Google SSO, `Camera` for Instagram, `Users` for Facebook).
+- **Session-Aware Landing Page CTAs (`components/(landing-page)/navbar.tsx` & `app/page.tsx`):**
+  - Dynamically routes logged-in users directly to "Dashboard" (`/automation`) while showing "Get Started" (`/login`) to guests.
+- **Session Verification Endpoint & Auth Page Guards (`GET /api/auth/me`):**
+  - Added session status endpoint and client-side listeners on `/login` and `/signup` to redirect authenticated users automatically.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 13 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+1. **[ ] Step 19 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
    - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
    - Exchange short-lived token for long-lived page access tokens.
    - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 14 — Automated Scheduling & Publishing Worker**
-   - Background worker / Cron job (e.g. Vercel Cron or QStash) to process scheduled posts.
-   - Dispatch posts to LinkedIn (`/rest/posts`) and Meta Graph API.
-   - Update `PostStatus` and `PlatformPostStatus` (`PUBLISHED` or `FAILED`).
+2. **[ ] Step 20 — Automation Cron Trigger / Background Queue Monitoring**
+   - Configure external periodic trigger (e.g. Vercel Cron or QStash) to call `GET /api/cron/publish` with `CRON_SECRET`.
+   - Add queue throttling and retry backoff mechanics.
 
-3. **[ ] Step 15 — Dashboard Analytics & Post Feed Integration**
-   - Fetch real posts from PostgreSQL in `/automation` dashboard.
-   - Update live stat counters (Total, Published, Scheduled, Failed) based on DB aggregations.
+
 

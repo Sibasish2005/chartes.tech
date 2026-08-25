@@ -5,17 +5,20 @@ import Growth from "@/components/(landing-page)/growth"
 import Services from "@/components/(landing-page)/services"
 import AboutMe from "@/components/(landing-page)/aboutMe"
 import Footer from "@/components/(landing-page)/footer"
+import { getCurrentUser } from "@/lib/auth"
 
-export default function Home() {
+export default async function Home() {
+  const user = await getCurrentUser();
+
   return (
     <div className="bg-[#EADFCF] lg:gap-[5px]">
-      <Navbar />
+      <Navbar isLoggedIn={!!user} />
       <Hero />
-      <Growth/>
-      <Solutions/>
-      <AboutMe/>
-      <Services/>
-      <Footer/>
+      <Growth />
+      <Solutions />
+      <AboutMe />
+      <Services />
+      <Footer />
     </div>
   )
 }

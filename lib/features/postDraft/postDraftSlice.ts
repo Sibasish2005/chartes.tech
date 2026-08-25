@@ -9,12 +9,14 @@ export interface PostDraftState {
   imageUrl: string;
   caption: string;
   platforms: Platform[];
+  scheduledAt: string | null;
 }
 
 const initialState: PostDraftState = {
   imageUrl: "",
   caption: "",
   platforms: [],
+  scheduledAt: null,
 };
 
 const postDraftSlice = createSlice({
@@ -35,6 +37,13 @@ const postDraftSlice = createSlice({
       action: PayloadAction<string>
     ) {
       state.caption = action.payload;
+    },
+
+    setScheduledAt(
+      state,
+      action: PayloadAction<string | null>
+    ) {
+      state.scheduledAt = action.payload;
     },
 
     togglePlatform(
@@ -66,12 +75,14 @@ const postDraftSlice = createSlice({
       state.imageUrl = action.payload.imageUrl;
       state.caption = action.payload.caption;
       state.platforms = action.payload.platforms;
+      state.scheduledAt = action.payload.scheduledAt || null;
     },
 
     clearDraft(state) {
       state.imageUrl = "";
       state.caption = "";
       state.platforms = [];
+      state.scheduledAt = null;
     },
   },
 });
@@ -79,6 +90,7 @@ const postDraftSlice = createSlice({
 export const {
   setImageUrl,
   setCaption,
+  setScheduledAt,
   togglePlatform,
   setPlatforms,
   hydrateDraft,

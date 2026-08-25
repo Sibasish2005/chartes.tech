@@ -15,6 +15,10 @@ export const createPostSchema = z.object({
   platforms: z
     .array(platformEnum)
     .min(1, "Select at least one platform"),
+  scheduledAt: z
+    .string()
+    .optional()
+    .nullable(),
 });
 
 export type CreatePostInput = z.infer<typeof createPostSchema>;

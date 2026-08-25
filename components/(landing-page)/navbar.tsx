@@ -10,7 +10,11 @@ const poppins = Poppins({
   subsets: ['latin'] 
 })
 
-export default function Navbar() {
+interface NavbarProps {
+  isLoggedIn?: boolean;
+}
+
+export default function Navbar({ isLoggedIn = false }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleMenu = () => setIsOpen(!isOpen)
@@ -80,10 +84,10 @@ export default function Navbar() {
         {/* Desktop Call to Actions */}
         <div className="hidden md:flex items-center space-x-3 md:space-x-4">
           <Link 
-            href="/login" 
+            href={isLoggedIn ? "/automation" : "/login"} 
             className="px-5 py-2 lg:px-7 lg:py-3 bg-black text-white text-xs lg:text-sm font-semibold rounded-full hover:bg-neutral-800 transition-all shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
           >
-            Get Started
+            {isLoggedIn ? "Dashboard" : "Get Started"}
           </Link>
           <Link 
             href="/booking" 
@@ -174,11 +178,11 @@ export default function Navbar() {
 
               <motion.div variants={itemVariants} className="flex flex-col space-y-3 pt-2">
                 <Link 
-                  href="/login" 
+                  href={isLoggedIn ? "/automation" : "/login"} 
                   onClick={toggleMenu}
                   className="w-full text-center py-3 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition-all"
                 >
-                  Get Started
+                  {isLoggedIn ? "Dashboard" : "Get Started"}
                 </Link>
                 <Link 
                   href="/booking" 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { createPostSchema } from "@/lib/validations/post";
+import { processScheduledPosts } from "@/lib/automation/worker";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,13 +25,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { imageUrl, caption, platforms } = result.data;
+    const { imageUrl, caption, platforms, scheduledAt } = result.data;
+
+    const scheduledDate = scheduledAt ? new Date(scheduledAt) : new Date();
+    const isDueImmediately = scheduledDate <= new Date();
 
     const post = await prisma.post.create({
       data: {
         userId: user.id,
         imageUrl,
         caption: caption || null,
+        status: "SCHEDULED",
+        scheduledAt: scheduledDate,
         platform: {
           create: platforms.map((platform) => ({
             platform,
@@ -41,6 +47,13 @@ export async function POST(request: NextRequest) {
         platform: true,
       },
     });
+
+    if (isDueImmediately) {
+      // Trigger worker asynchronously to immediately process due posts
+      processScheduledPosts().catch((err) =>
+        console.error("[Post API] Immediate worker trigger error:", err)
+      );
+    }
 
     return NextResponse.json(
       {
