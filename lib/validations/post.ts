@@ -17,6 +17,11 @@ export const createPostSchema = z.object({
     .min(1, "Select at least one platform"),
   scheduledAt: z
     .string()
+    .refine((val) => {
+      if (!val) return true;
+      const date = new Date(val);
+      return !isNaN(date.getTime()) && date.getTime() > Date.now();
+    }, "Scheduled time must be in the future")
     .optional()
     .nullable(),
 });

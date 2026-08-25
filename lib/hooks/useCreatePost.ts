@@ -105,7 +105,27 @@ export function useCreatePost() {
       setIsScheduled(true);
       return;
     }
-    const scheduledAtISO = new Date(`${scheduleDate}T${scheduleTime}:00`).toISOString();
+
+    const scheduledDateObj = new Date(`${scheduleDate}T${scheduleTime}:00`);
+    if (isNaN(scheduledDateObj.getTime())) {
+      const err = "Please enter a valid schedule date and time.";
+      dispatch(setErrorMessage(err));
+      toast.error("Invalid Schedule Time", {
+        description: err,
+      });
+      return;
+    }
+
+    if (scheduledDateObj.getTime() <= Date.now()) {
+      const err = "Scheduled time must be in the future.";
+      dispatch(setErrorMessage(err));
+      toast.error("Invalid Schedule Time", {
+        description: "Please choose a future date and time for scheduled publishing.",
+      });
+      return;
+    }
+
+    const scheduledAtISO = scheduledDateObj.toISOString();
     await submitPost(scheduledAtISO);
   }
 
