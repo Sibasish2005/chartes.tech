@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
   ExternalLink,
@@ -21,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useSocialAccounts } from "@/lib/hooks";
 
 export interface PlatformConfig {
   id: string;
@@ -41,12 +40,14 @@ interface ConnectedAccountsGridProps {
 export default function ConnectedAccountsGrid({
   initialPlatforms,
 }: ConnectedAccountsGridProps) {
-  const router = useRouter();
-  const [platforms, setPlatforms] = useState<PlatformConfig[]>(initialPlatforms);
-  const [targetDisconnect, setTargetDisconnect] = useState<PlatformConfig | null>(
-    null
-  );
-  const [disconnecting, setDisconnecting] = useState(false);
+  const {
+    platforms,
+    targetDisconnect,
+    disconnecting,
+    promptDisconnect,
+    cancelDisconnect,
+    handleConfirmDisconnect,
+  } = useSocialAccounts(initialPlatforms);
 
   function getIcon(iconName: PlatformConfig["iconName"]) {
     switch (iconName) {
@@ -60,42 +61,6 @@ export default function ConnectedAccountsGrid({
         return Users;
       default:
         return Briefcase;
-    }
-  }
-
-  async function handleConfirmDisconnect() {
-    if (!targetDisconnect) return;
-
-    setDisconnecting(true);
-    try {
-      const response = await fetch("/api/social/disconnect", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          provider: targetDisconnect.id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to disconnect account");
-      }
-
-      // Optimistically update connected status
-      setPlatforms((prev) =>
-        prev.map((p) =>
-          p.id === targetDisconnect.id ? { ...p, connected: false } : p
-        )
-      );
-
-      setTargetDisconnect(null);
-      router.refresh();
-    } catch (error) {
-      console.error("Disconnect error:", error);
-      alert("Failed to disconnect account. Please try again.");
-    } finally {
-      setDisconnecting(false);
     }
   }
 
@@ -171,7 +136,7 @@ export default function ConnectedAccountsGrid({
                     {/* Disconnect Button for Social Media accounts */}
                     <button
                       type="button"
-                      onClick={() => setTargetDisconnect(platform)}
+                      onClick={() => promptDisconnect(platform)}
                       className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-neutral-500 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all"
                       title={`Disconnect ${platform.name}`}
                     >
@@ -205,7 +170,7 @@ export default function ConnectedAccountsGrid({
       <Dialog
         open={!!targetDisconnect}
         onOpenChange={(open) => {
-          if (!open && !disconnecting) setTargetDisconnect(null);
+          if (!open) cancelDisconnect();
         }}
       >
         <DialogContent className="bg-white border border-[#EAE3D9] shadow-lg rounded-2xl p-6 sm:max-w-md">
@@ -239,7 +204,7 @@ export default function ConnectedAccountsGrid({
               type="button"
               variant="outline"
               disabled={disconnecting}
-              onClick={() => setTargetDisconnect(null)}
+              onClick={cancelDisconnect}
               className="px-4 py-2 rounded-full border border-[#EAE3D9] text-xs font-medium text-neutral-700 hover:bg-[#FAF8F5]"
             >
               Cancel

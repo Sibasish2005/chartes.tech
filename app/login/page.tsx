@@ -1,10 +1,11 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { signinSchema } from "@/lib/validations/auth";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ArrowRight } from "lucide-react";
+import { useAuthRedirect } from "@/lib/hooks";
 
 const fontSans = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700"],
@@ -17,13 +18,8 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetch("/api/auth/me").then((res) => {
-      if (res.ok) {
-        window.location.href = "/automation";
-      }
-    });
-  }, []);
+  // Auto-redirect if already logged in
+  useAuthRedirect({ redirectToIfAuthenticated: "/automation" });
 
   async function handleSubmit(event: FormEvent<HTMLElement>) {
     event.preventDefault();

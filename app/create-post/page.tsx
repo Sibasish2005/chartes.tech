@@ -16,6 +16,7 @@ import {
 import {
   useAppDispatch,
   useAppSelector,
+  useCreatePost,
 } from "@/lib/hooks";
 
 import {
@@ -89,13 +90,20 @@ export default function CreatePostPage() {
     (state) => state.composerUi
   );
 
-  // Local state only for server request state & timing
-  const [creating, setCreating] = useState(false);
-  const [isScheduled, setIsScheduled] = useState(false);
-  const [scheduleDate, setScheduleDate] = useState(
-    new Date(Date.now() + 86400000).toISOString().split("T")[0]
-  );
-  const [scheduleTime, setScheduleTime] = useState("10:00");
+  // -----------------------------
+  // Custom Hook: Post Creation & Scheduling Logic
+  // -----------------------------
+  const {
+    creating,
+    isScheduled,
+    scheduleDate,
+    scheduleTime,
+    setIsScheduled,
+    setScheduleDate,
+    setScheduleTime,
+    handlePublishNow,
+    handleSchedulePost,
+  } = useCreatePost();
 
   // -----------------------------
   // ImageKit authentication
@@ -246,89 +254,7 @@ export default function CreatePostPage() {
     }
   }
 
-  // -----------------------------
-  // Create / Publish post
-  // -----------------------------
 
-  async function submitPost(scheduledAtISO: string | null) {
-    dispatch(setErrorMessage(""));
-
-    const validationResult = createPostSchema.safeParse({
-      imageUrl,
-      caption,
-      platforms,
-      scheduledAt: scheduledAtISO,
-    });
-
-    if (!validationResult.success) {
-      const message =
-        validationResult.error.issues[0]?.message ||
-        "Please fix the form errors.";
-      dispatch(setErrorMessage(message));
-      return;
-    }
-
-    setCreating(true);
-
-    try {
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          imageUrl,
-          caption,
-          platforms,
-          scheduledAt: scheduledAtISO,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        dispatch(
-          setErrorMessage(data.error || "Failed to create post.")
-        );
-        return;
-      }
-
-      // Post successfully saved
-      dispatch(clearDraft());
-      dispatch(resetComposerUi());
-      setIsScheduled(false);
-
-      alert(
-        scheduledAtISO
-          ? `Post scheduled successfully for ${scheduleDate} at ${scheduleTime}.`
-          : "Post published live to LinkedIn successfully!"
-      );
-    } catch (error) {
-      console.error("Create post error:", error);
-      dispatch(
-        setErrorMessage(
-          "Something went wrong while creating the post."
-        )
-      );
-    } finally {
-      setCreating(false);
-    }
-  }
-
-  // 1. Instant Publish Handler
-  async function handlePublishNow() {
-    await submitPost(null);
-  }
-
-  // 2. Schedule Timing Handler
-  async function handleSchedulePost() {
-    if (!isScheduled) {
-      setIsScheduled(true);
-      return;
-    }
-    const scheduledAtISO = new Date(`${scheduleDate}T${scheduleTime}:00`).toISOString();
-    await submitPost(scheduledAtISO);
-  }
 
   return (
     <AppLayout>

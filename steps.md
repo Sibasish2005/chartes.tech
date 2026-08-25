@@ -357,16 +357,43 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ---
 
+### STEP 21 — Modular Custom Hooks Architecture ✅
+- **`useAuthRedirect` (`lib/hooks/useAuthRedirect.ts`):**
+  - Encapsulates `/api/auth/me` session validation and automatic route redirection across `/login` and `/signup`.
+- **`useDeletePost` (`lib/hooks/useDeletePost.ts`):**
+  - Manages modal visibility, confirmation handling, optimistic list mutations, and `DELETE /api/posts/[id]` dispatch for dashboard history.
+- **`useSocialAccounts` (`lib/hooks/useSocialAccounts.ts`):**
+  - Orchestrates platform connection states, unlinking confirmation modals, and `POST /api/social/disconnect` requests.
+- **`useCreatePost` (`lib/hooks/useCreatePost.ts`):**
+  - Centralizes composer validation, immediate vs scheduled timing handlers, payload preparation, and `POST /api/posts` submissions.
+- **Unified Barrel Export (`lib/hooks.ts`):**
+  - Clean centralized export surface for all typed Redux and custom domain hooks.
+
+---
+
+### STEP 22 — Modern Toast Notification System (Sonner & Design System Integration) ✅
+- **Installed & Configured Sonner (`components/ui/sonner.tsx`):**
+  - Styled toasts with design system tokens: `#FFFFFF` card surface, `#EAE3D9` micro-borders, `#FAFDF9` subtle emerald success tints, `#FFF8F8` rose error tints, rounded pill actions, and `Plus_Jakarta_Sans` typography.
+  - Mounted `<Toaster />` globally inside `app/layout.tsx`.
+- **Replaced All Native Browser `alert()` Calls:**
+  - `useCreatePost`: Rich success toasts for instant LinkedIn publishing and scheduled date/time confirmations.
+  - `useDeletePost`: Confirmation feedback toast indicating which post was removed with smooth exit animations.
+  - `useSocialAccounts`: Account disconnection success and error feedback toasts with customized platform titles.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 21 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+1. **[ ] Step 23 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
    - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
    - Exchange short-lived token for long-lived page access tokens.
    - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 22 — Automation Cron Trigger / Background Queue Monitoring**
+2. **[ ] Step 24 — Automation Cron Trigger / Background Queue Monitoring**
    - Configure external periodic trigger (e.g. Vercel Cron or QStash) to call `GET /api/cron/publish` with `CRON_SECRET`.
    - Add queue throttling and retry backoff mechanics.
+
+
 
 
 

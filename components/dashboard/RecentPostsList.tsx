@@ -42,6 +42,8 @@ function formatDate(dateInput: Date | string): string {
   return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+import { useDeletePost } from "@/lib/hooks";
+
 export interface PostItem {
   id: string;
   caption: string | null;
@@ -61,35 +63,14 @@ interface RecentPostsListProps {
 }
 
 export default function RecentPostsList({ initialPosts }: RecentPostsListProps) {
-  const router = useRouter();
   const [posts, setPosts] = useState<PostItem[]>(initialPosts);
-  const [postToDelete, setPostToDelete] = useState<PostItem | null>(null);
-  const [deleting, setDeleting] = useState(false);
-
-  async function handleDeleteConfirm() {
-    if (!postToDelete) return;
-
-    setDeleting(true);
-    try {
-      const response = await fetch(`/api/posts/${postToDelete.id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete post");
-      }
-
-      // Optimistically remove from state
-      setPosts((prev) => prev.filter((p) => p.id !== postToDelete.id));
-      setPostToDelete(null);
-      router.refresh();
-    } catch (error) {
-      console.error("Delete post error:", error);
-      alert("Failed to delete the post. Please try again.");
-    } finally {
-      setDeleting(false);
-    }
-  }
+  const {
+    postToDelete,
+    deleting,
+    openDeleteDialog,
+    closeDeleteDialog,
+    handleDeleteConfirm,
+  } = useDeletePost(posts, setPosts);
 
   if (posts.length === 0) {
     return (
@@ -181,7 +162,7 @@ export default function RecentPostsList({ initialPosts }: RecentPostsListProps) 
               {/* Delete Button with Confirmation Pop-up */}
               <button
                 type="button"
-                onClick={() => setPostToDelete(post)}
+                onClick={() => openDeleteDialog(post)}
                 className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
                 title="Delete Post"
               >
@@ -196,7 +177,7 @@ export default function RecentPostsList({ initialPosts }: RecentPostsListProps) 
       <Dialog
         open={!!postToDelete}
         onOpenChange={(open) => {
-          if (!open && !deleting) setPostToDelete(null);
+          if (!open) closeDeleteDialog();
         }}
       >
         <DialogContent className="bg-white border border-[#EAE3D9] shadow-lg rounded-2xl p-6 sm:max-w-md">
@@ -233,7 +214,7 @@ export default function RecentPostsList({ initialPosts }: RecentPostsListProps) 
               type="button"
               variant="outline"
               disabled={deleting}
-              onClick={() => setPostToDelete(null)}
+              onClick={closeDeleteDialog}
               className="px-4 py-2 rounded-full border border-[#EAE3D9] text-xs font-medium text-neutral-700 hover:bg-[#FAF8F5]"
             >
               Cancel
