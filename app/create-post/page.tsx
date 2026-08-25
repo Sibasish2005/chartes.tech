@@ -13,10 +13,13 @@ import {
   ImageKitUploadNetworkError,
 } from "@imagekit/next";
 
+import Link from "next/link";
+
 import {
   useAppDispatch,
   useAppSelector,
   useCreatePost,
+  useConnectedPlatforms,
 } from "@/lib/hooks";
 
 import {
@@ -89,6 +92,11 @@ export default function CreatePostPage() {
   } = useAppSelector(
     (state) => state.composerUi
   );
+
+  // -----------------------------
+  // Custom Hook: Connected Platforms
+  // -----------------------------
+  const { connectedPlatforms } = useConnectedPlatforms();
 
   // -----------------------------
   // Custom Hook: Post Creation & Scheduling Logic
@@ -380,28 +388,56 @@ export default function CreatePostPage() {
 
                 {/* Target Platforms */}
                 <div className="space-y-2.5 pt-2 border-t border-[#EAE3D9]/60">
-                  <Label className="text-xs font-semibold text-neutral-700">
-                    Distribution Channels
-                  </Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold text-neutral-700">
+                      Distribution Channels
+                    </Label>
+                    <Link
+                      href="/connected-accounts"
+                      className="text-[11px] font-medium text-neutral-500 hover:text-neutral-900 underline"
+                    >
+                      Manage Accounts
+                    </Link>
+                  </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     {availablePlatforms.map((platform) => {
-                      const isSelected = platforms.includes(platform.value);
+                      const isConnected = connectedPlatforms.includes(platform.value);
+                      const isSelected = platforms.includes(platform.value) && isConnected;
                       return (
                         <button
                           type="button"
                           key={platform.value}
-                          onClick={() => dispatch(togglePlatform(platform.value))}
+                          disabled={!isConnected}
+                          onClick={() => isConnected && dispatch(togglePlatform(platform.value))}
+                          title={
+                            isConnected
+                              ? `Publish to ${platform.label}`
+                              : `${platform.label} is not connected`
+                          }
                           className={`p-2.5 rounded-xl border text-xs font-medium flex items-center justify-between transition-all ${
-                            isSelected
+                            !isConnected
+                              ? "bg-[#FAF8F5]/60 text-neutral-400 border-[#EAE3D9]/60 opacity-50 cursor-not-allowed"
+                              : isSelected
                               ? "bg-[#18181B] text-white border-black shadow-xs font-semibold"
                               : "bg-[#FAF8F5] text-neutral-700 border-[#EAE3D9] hover:bg-white"
                           }`}
                         >
-                          <span>{platform.label}</span>
+                          <div className="flex flex-col items-start text-left">
+                            <span className="leading-tight">{platform.label}</span>
+                            {!isConnected && (
+                              <span className="text-[9px] text-neutral-400 font-normal">
+                                Not connected
+                              </span>
+                            )}
+                          </div>
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
-                              isSelected ? "bg-white" : "bg-neutral-300"
+                              !isConnected
+                                ? "bg-neutral-200"
+                                : isSelected
+                                ? "bg-white"
+                                : "bg-neutral-400"
                             }`}
                           />
                         </button>

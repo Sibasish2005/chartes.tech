@@ -382,16 +382,29 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ---
 
+### STEP 23 — Connected Distribution Channels Validation & UI Gating ✅
+- **Connected Accounts Endpoint (`GET /api/social/connected`):**
+  - Queries `prisma.account` for the authenticated user and returns an array of currently authorized platforms (`["LINKEDIN"]`).
+- **`useConnectedPlatforms` Custom Hook (`lib/hooks/useConnectedPlatforms.ts`):**
+  - Fetches and caches the user's active social connections for client-side validation.
+- **Post Composer Channel Gating (`app/create-post/page.tsx`):**
+  - Disables unlinked platforms (`Instagram`, `Facebook`) with `opacity-50 cursor-not-allowed` styles and a *"Not connected"* status indicator.
+  - Keeps only verified, connected accounts selectable (`LinkedIn`).
+  - Added a direct *"Manage Accounts"* link to `/connected-accounts` for effortless account linking.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 23 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+1. **[ ] Step 24 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
    - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
    - Exchange short-lived token for long-lived page access tokens.
    - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 24 — Automation Cron Trigger / Background Queue Monitoring**
+2. **[ ] Step 25 — Automation Cron Trigger / Background Queue Monitoring**
    - Configure external periodic trigger (e.g. Vercel Cron or QStash) to call `GET /api/cron/publish` with `CRON_SECRET`.
    - Add queue throttling and retry backoff mechanics.
+
 
 
 

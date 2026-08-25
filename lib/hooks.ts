@@ -8,3 +8,4 @@ export { useAuthRedirect } from "./hooks/useAuthRedirect";
 export { useDeletePost } from "./hooks/useDeletePost";
 export { useSocialAccounts } from "./hooks/useSocialAccounts";
 export { useCreatePost } from "./hooks/useCreatePost";
+export { useConnectedPlatforms } from "./hooks/useConnectedPlatforms";
