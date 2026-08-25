@@ -394,16 +394,29 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ---
 
+### STEP 24 — Automated Cron Publishing Engine & Background Dispatch ✅
+- **Secure Cron Endpoint (`app/api/cron/publish/route.ts`):**
+  - Protected with `CRON_SECRET` validation (`Authorization: Bearer <CRON_SECRET>`).
+  - Calls `processScheduledPosts()` background worker.
+- **Worker Execution Pipeline (`lib/automation/worker.ts`):**
+  - Queries scheduled posts ready for release (`status: "SCHEDULED"`, `scheduledAt <= now`).
+  - Fetches associated OAuth tokens and dispatches to LinkedIn REST API (with 2-step image uploads).
+  - Cascades status to `PUBLISHED` or `FAILED`.
+- **Vercel Cron Configuration (`vercel.json`):**
+  - Added native Vercel Cron configuration (`schedule: "* * * * *"`) to trigger automatic sweeps every minute upon deployment.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 24 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+1. **[ ] Step 25 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
    - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
    - Exchange short-lived token for long-lived page access tokens.
    - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 25 — Automation Cron Trigger / Background Queue Monitoring**
-   - Configure external periodic trigger (e.g. Vercel Cron or QStash) to call `GET /api/cron/publish` with `CRON_SECRET`.
-   - Add queue throttling and retry backoff mechanics.
+2. **[ ] Step 26 — X.com (Twitter API v2) & Tech Socials Integration**
+   - Implement OAuth 2.0 PKCE for X/Twitter and AT Protocol for Bluesky.
+
 
 
 
