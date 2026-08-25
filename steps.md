@@ -1,6 +1,6 @@
-# Omnicode - Project Build Steps & Architecture Roadmap
+# chartes.tech - Project Build Steps & Architecture Roadmap
 
-This document provides a comprehensive log of all implementation steps, architectural decisions, completed API routes, database schemas, and current progress for the Omnicode marketing & automation platform.
+This document provides a comprehensive log of all implementation steps, architectural decisions, completed API routes, database schemas, and current progress for the chartes.tech marketing & automation platform.
 
 ---
 
@@ -33,7 +33,11 @@ End-to-End Zod Validation   ✅ DONE (`lib/validations/`, API routes & client fo
        ↓
 Connected Accounts Hub      ✅ DONE (`/connected-accounts` UI & provider connection cards)
        ↓
-Social OAuth Integrations   🔄 NEXT STEP (Facebook / Instagram Graph API / LinkedIn OAuth 2.0)
+Privacy Policy & Legal Hub  ✅ DONE (`/privacy`, `/privacy-policy`, GDPR/CCPA compliance)
+       ↓
+LinkedIn OAuth 2.0 Engine   ✅ DONE (`/api/social/linkedin`, `/api/social/linkedin/callback`, OpenID Connect)
+       ↓
+Meta (FB/IG) Graph API      🔄 NEXT STEP (Instagram & Facebook Pages OAuth & Tokens)
        ↓
 Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
 ```
@@ -191,22 +195,52 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker)
   - Displays interactive connection status cards for **Google**, **Instagram**, **Facebook**, and **LinkedIn**.
 - **Build & CI Pipeline Integrity:**
   - Configured `prisma generate` in `package.json` `postinstall` and `build` scripts.
-  - Verified clean Next.js 16 (Turbopack) build and TypeScript type-checking across all 17 routes.
+  - Verified clean Next.js 16 (Turbopack) build and TypeScript type-checking across all routes.
+
+---
+
+### STEP 11 — Privacy Policy & Legal Governance Hub ✅
+- **Privacy Policy (`/privacy` & `/privacy-policy`):**
+  - Implemented 16-section interactive privacy document covering GDPR, CCPA/CPRA, and global data privacy standards.
+  - Integrated full-text section search, interactive sticky table of contents, PDF print engine, and smooth scroll anchors.
+  - Configured automated redirect route at `/privacy-policy` pointing to `/privacy`.
+- **Branding & Compliance Alignment:**
+  - Complete rebranding to `chartes.tech` across metadata, legal disclosures, policy copy, and footer links.
+  - Dedicated DPO and legal contact mailto points (`privacy@chartes.tech`, `legal@chartes.tech`, `dpo@chartes.tech`).
+
+---
+
+### STEP 12 — LinkedIn OAuth 2.0 Integration & Token Vault ✅
+- **OAuth Initiation (`GET /api/social/linkedin`):**
+  - Protected endpoint requiring an active session (`getCurrentUser()`).
+  - Generates secure random 16-byte state parameter (`crypto.randomBytes(16)`).
+  - Sets HTTP-only, `sameSite: "lax"`, secure cookie `linkedin_oauth_state` (10-minute expiry).
+  - Redirects to `https://www.linkedin.com/oauth/v2/authorization` with `openid`, `profile`, `email`, and `w_member_social` scopes.
+- **OAuth Callback (`GET /api/social/linkedin/callback`):**
+  - Validates callback `state` parameter against stored `linkedin_oauth_state` cookie (CSRF protection).
+  - Verifies active user session via `session_token`.
+  - Exchanges authorization code for access token at `https://www.linkedin.com/oauth/v2/accessToken`.
+  - Queries LinkedIn OpenID Connect UserInfo endpoint (`https://api.linkedin.com/v2/userinfo`) to retrieve verified member ID (`sub`).
+  - Upserts `Account` record with provider `linkedin`, `providerAccountId`, `accessToken`, and `expiresAt`.
+  - Deletes state cookie and redirects back to `/connected-accounts?linkedin=connected`.
+- **Client-Side Optimization:**
+  - Changed Next.js `<Link>` to standard `<a>` tag in `/connected-accounts` to prevent background RSC prefetching and state cookie invalidation.
 
 ---
 
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 11 — Social OAuth Integrations & Token Storage**
-   - Connect Facebook Graph API / Instagram Graph API OAuth flows.
-   - Connect LinkedIn OAuth 2.0 flow.
-   - Store access tokens in `Account` model for automated publishing.
+1. **[ ] Step 13 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+   - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
+   - Exchange short-lived token for long-lived page access tokens.
+   - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 12 — Automated Scheduling & Publishing Worker**
-   - Background worker / Cron job (e.g. Vercel Cron, QStash, or background polling) to process scheduled posts.
-   - Dispatch posts to respective social media platform APIs.
+2. **[ ] Step 14 — Automated Scheduling & Publishing Worker**
+   - Background worker / Cron job (e.g. Vercel Cron or QStash) to process scheduled posts.
+   - Dispatch posts to LinkedIn (`/rest/posts`) and Meta Graph API.
    - Update `PostStatus` and `PlatformPostStatus` (`PUBLISHED` or `FAILED`).
 
-3. **[ ] Step 13 — Dashboard Analytics & Post Feed Integration**
+3. **[ ] Step 15 — Dashboard Analytics & Post Feed Integration**
    - Fetch real posts from PostgreSQL in `/automation` dashboard.
    - Update live stat counters (Total, Published, Scheduled, Failed) based on DB aggregations.
+

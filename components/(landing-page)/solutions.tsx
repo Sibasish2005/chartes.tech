@@ -48,7 +48,7 @@ export default function Solutions() {
           SOLUTION SECTION
       ================================= */}
 
-      <section className="min-h-screen w-full px-[5vw] py-[5vw]">
+      <section id="solutions" className="min-h-screen w-full px-[5vw] py-[5vw]">
         <div className="grid w-full grid-cols-1 items-start gap-12 py-10 lg:grid-cols-2 lg:gap-20 lg:py-20 ">
 
           {/* LEFT — STICKY HEADING */}

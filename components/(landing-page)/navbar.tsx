@@ -63,16 +63,16 @@ export default function Navbar() {
           <Link href="/" className="text-gray-800 hover:text-black transition-colors font-medium text-sm lg:text-base">
             Home
           </Link>
-          <Link href="#about" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
+          <Link href="/#about" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
             About
           </Link>
-          <Link href="#services" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
+          <Link href="/#services" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
             Services
           </Link>
-          {/* <Link href="#works" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
-            Works
-          </Link> */}
-          <Link href="#contact" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
+          <Link href="/#solutions" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
+            Solutions
+          </Link>
+          <Link href="/#contact" className="text-gray-600 hover:text-black transition-colors font-medium text-sm lg:text-base">
             Contact
           </Link>
         </div>
@@ -86,10 +86,10 @@ export default function Navbar() {
             Get Started
           </Link>
           <Link 
-            href="#message" 
+            href="/booking" 
             className="px-5 py-2 lg:px-7 lg:py-3 border border-neutral-300 text-neutral-800 text-xs lg:text-sm font-semibold rounded-full hover:bg-neutral-50 transition-all"
           >
-            Chat with AI
+            Book a Call
           </Link>
         </div>
 
@@ -135,7 +135,7 @@ export default function Navbar() {
               </motion.div>
               <motion.div variants={itemVariants}>
                 <Link 
-                  href="#about" 
+                  href="/#about" 
                   onClick={toggleMenu}
                   className="block text-gray-600 hover:text-black transition-colors font-medium text-lg"
                 >
@@ -144,7 +144,7 @@ export default function Navbar() {
               </motion.div>
               <motion.div variants={itemVariants}>
                 <Link 
-                  href="#services" 
+                  href="/#services" 
                   onClick={toggleMenu}
                   className="block text-gray-600 hover:text-black transition-colors font-medium text-lg"
                 >
@@ -152,17 +152,17 @@ export default function Navbar() {
                 </Link>
               </motion.div>
               <motion.div variants={itemVariants}>
-                {/* <Link 
-                  href="#works" 
+                <Link 
+                  href="/#solutions" 
                   onClick={toggleMenu}
                   className="block text-gray-600 hover:text-black transition-colors font-medium text-lg"
                 >
-                  Works
-                </Link> */}
+                  Solutions
+                </Link>
               </motion.div>
               <motion.div variants={itemVariants}>
                 <Link 
-                  href="#contact" 
+                  href="/#contact" 
                   onClick={toggleMenu}
                   className="block text-gray-600 hover:text-black transition-colors font-medium text-lg"
                 >
@@ -181,11 +181,11 @@ export default function Navbar() {
                   Get Started
                 </Link>
                 <Link 
-                  href="#message" 
+                  href="/booking" 
                   onClick={toggleMenu}
                   className="w-full text-center py-3 border border-neutral-300 text-neutral-800 font-semibold rounded-full hover:bg-neutral-50 transition-all"
                 >
-                  Send Message
+                  Book a Call
                 </Link>
               </motion.div>
             </div>

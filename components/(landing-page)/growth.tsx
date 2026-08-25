@@ -14,9 +14,9 @@ const poppins = Poppins({
 })
 
 const items = [
-    { image: '/growth/growth1.jpg', label: 'Inconsistent Content', link: '#' },
-    { image: '/growth/growth2.jpg', label: 'Stagnant Engagement', link: '#' },
-    { image: '/growth/growth3.jpg', label: 'Unconverted Followers', link: '#' },
+    { image: '/growth/growth1.jpg', label: 'Inconsistent Content' },
+    { image: '/growth/growth2.jpg', label: 'Stagnant Engagement' },
+    { image: '/growth/growth3.jpg', label: 'Unconverted Followers' },
 ]
 
 export default function Growth() {

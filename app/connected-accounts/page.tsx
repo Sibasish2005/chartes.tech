@@ -45,7 +45,7 @@ export default async function ConnectedAccountsPage() {
       name: "LinkedIn",
       description: "Share updates with your professional network",
       connected: connectedProviders.has("linkedin"),
-      connectUrl: "#",
+      connectUrl: "/api/social/linkedin",
     },
   ];
 
@@ -94,12 +94,12 @@ export default async function ConnectedAccountsPage() {
                   Coming Soon
                 </Button>
               ) : (
-                <Link
+                <a
                   href={platform.connectUrl}
                   className={buttonVariants({ variant: "default", size: "sm", className: "w-full text-center" })}
                 >
                   Connect {platform.name}
-                </Link>
+                </a>
               )}
             </CardContent>
           </Card>

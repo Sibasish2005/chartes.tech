@@ -36,7 +36,7 @@ const beliefs = [
 
 export default function AboutMe() {
   return (
-    <section className="w-full bg-black/90 text-[#F3EBDD] py-16 md:py-24 lg:py-32 px-[5vw] flex flex-col gap-16 md:gap-24">
+    <section id="about" className="w-full bg-black/90 text-[#F3EBDD] py-16 md:py-24 lg:py-32 px-[5vw] flex flex-col gap-16 md:gap-24">
       {/* TOP SECTION: ABOUT ME */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
         

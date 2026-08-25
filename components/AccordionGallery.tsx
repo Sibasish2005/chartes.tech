@@ -105,8 +105,9 @@ const AccordionGallery = ({
         tl.to(panel, { flexGrow: isActive ? grow : 1, ...rotProp, duration: dur, ease }, 0);
 
         if (media) {
+          const isMobile = typeof window !== 'undefined' && window.innerWidth <= 520;
           const drift = Math.max(-1.5, Math.min(1.5, active - i));
-          const shift = drift * parallax * mediaSize * 0.06;
+          const shift = isMobile ? 0 : drift * parallax * mediaSize * 0.04;
           const gray = grayscale ? (isActive ? 0 : 1) : 0;
           tl.to(
             media,
@@ -115,6 +116,7 @@ const AccordionGallery = ({
               yPercent: -50,
               x: vertical ? 0 : isActive ? 0 : shift,
               y: vertical ? (isActive ? 0 : shift) : 0,
+              scale: isMobile ? 1.05 : 1.08,
               '--ag-gray': gray,
               '--ag-dim': isActive ? 0 : 0.35,
               duration: dur,
@@ -157,9 +159,11 @@ const AccordionGallery = ({
 
     const measure = () => {
       const rect = el.getBoundingClientRect();
-      const total = vertical ? rect.height : rect.width;
+      const isMobile = window.innerWidth <= 520;
+      const isVert = vertical || isMobile;
+      const total = isVert ? rect.height : rect.width;
       const usable = Math.max(total - gap * (count - 1), 120);
-      const size = Math.max(140, usable * Math.min(Math.max(expandRatio, 0.2), 0.9) * 1.22);
+      const size = Math.max(rect.width, rect.height, usable, 320);
       mediaSizeRef.current = size;
       el.style.setProperty('--ag-media-size', `${size}px`);
       applyLayout(!firstRunRef.current);
@@ -187,11 +191,11 @@ const AccordionGallery = ({
     if (trigger === 'hover') setActive(i);
   };
 
-  const handleClick = (i: number, e: MouseEvent) => {
-    if (i !== active) {
+  const handleClick = (i: number, e: MouseEvent, hasLink: boolean) => {
+    if (!hasLink || i !== active) {
       e.preventDefault();
-      setActive(i);
     }
+    setActive(i);
   };
 
   const handleKeyDown = (i: number, e: KeyboardEvent) => {
@@ -207,21 +211,22 @@ const AccordionGallery = ({
   return (
     <div
       ref={rootRef}
-      className={`flex ${vertical ? 'flex-col' : 'flex-row'} w-full max-w-full [perspective:1400px] max-[520px]:!flex-col max-[520px]:[perspective:none] ${className}`}
+      className={`flex ${vertical ? 'flex-col' : 'flex-row'} w-full max-w-full [perspective:1400px] max-[520px]:!flex-col max-[520px]:!h-[520px] max-[520px]:[perspective:none] ${className}`}
       style={{ gap: `${gap}px`, height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px` }}
       role="list"
       aria-label="Image accordion gallery"
     >
       {items.map((item, i) => {
         const isActive = i === active;
-        const Tag = (item.link ? 'a' : 'div') as 'a';
+        const hasLink = Boolean(item.link && item.link !== '#' && item.link !== '');
+        const Tag = (hasLink ? 'a' : 'div') as 'a';
         return (
           <Tag
             key={i}
             ref={(el: HTMLElement | null) => {
               panelRefs.current[i] = el;
             }}
-            className="group relative block min-w-0 min-h-0 flex-[1_1_0] cursor-pointer overflow-hidden bg-[#0a0713] no-underline outline-none [transform-style:preserve-3d] [transform-origin:center] [box-shadow:0_10px_30px_-18px_rgba(0,0,0,0.8)] focus-visible:[box-shadow:0_0_0_2px_var(--ag-accent),0_10px_30px_-18px_rgba(0,0,0,0.8)] max-[520px]:min-h-[84px] max-[520px]:!transform-none"
+            className="group relative block min-w-0 min-h-0 flex-[1_1_0] cursor-pointer overflow-hidden bg-[#0a0713] no-underline outline-none [transform-style:preserve-3d] [transform-origin:center] [box-shadow:0_10px_30px_-18px_rgba(0,0,0,0.8)] focus-visible:[box-shadow:0_0_0_2px_var(--ag-accent),0_10px_30px_-18px_rgba(0,0,0,0.8)] max-[520px]:min-h-[90px] max-[520px]:!transform-none"
             style={
               {
                 borderRadius: `${radius}px`,
@@ -229,8 +234,8 @@ const AccordionGallery = ({
                 willChange: 'flex-grow, transform'
               } as CSSProperties
             }
-            href={item.link || undefined}
-            onClick={e => handleClick(i, e)}
+            href={hasLink ? item.link : undefined}
+            onClick={e => handleClick(i, e, hasLink)}
             onMouseEnter={() => handleEnter(i)}
             onFocus={() => setActive(i)}
             onKeyDown={e => handleKeyDown(i, e)}
@@ -244,10 +249,12 @@ const AccordionGallery = ({
                 ref={(el: HTMLElement | null) => {
                   mediaRefs.current[i] = el;
                 }}
-                className="absolute top-1/2 left-1/2 [filter:grayscale(var(--ag-gray,1))]"
+                className="absolute top-1/2 left-1/2 w-full h-full min-w-full min-h-full [filter:grayscale(var(--ag-gray,1))]"
                 style={{
-                  width: vertical ? '100%' : 'var(--ag-media-size, 320px)',
-                  height: vertical ? 'var(--ag-media-size, 320px)' : '100%',
+                  width: '100%',
+                  height: '100%',
+                  minWidth: '100%',
+                  minHeight: '100%',
                   willChange: 'transform, filter'
                 }}
               >

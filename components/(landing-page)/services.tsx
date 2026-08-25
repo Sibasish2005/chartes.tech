@@ -61,7 +61,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="w-full bg-[#F3EBDD] text-[#141E30] pt-20 md:pt-28 pb-0">
+    <section id="services" className="w-full bg-[#F3EBDD] text-[#141E30] pt-20 md:pt-28 pb-0">
       {/* Opening Section with balanced spacing */}
       <div className="w-full px-[5vw] max-w-5xl mx-auto flex flex-col gap-5 md:gap-7 mb-12 md:mb-16 text-center items-center">
         <span className={`${poppins.className} text-xs md:text-sm font-semibold tracking-[0.2em] text-[#A67C3D] uppercase`}>

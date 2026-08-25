@@ -10,7 +10,7 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#0D0D0D] text-[#F3EBDD] flex flex-col">
+    <footer id="contact" className="w-full bg-[#0D0D0D] text-[#F3EBDD] flex flex-col">
       {/* Call to Action Section (Moved from Services) */}
       <div className="relative w-full px-[5vw] py-28 md:py-36 lg:py-44 flex flex-col items-center justify-center text-center gap-8 border-b border-neutral-800/80 overflow-hidden">
         {/* Translucent Background Image & Overlays */}
