@@ -3,6 +3,7 @@
 import {
   ChangeEvent,
   useState,
+  useRef,
 } from "react";
 
 import {
@@ -45,7 +46,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { createPostSchema } from "@/lib/validations/post";
 import AppLayout from "@/components/layout/AppLayout";
-import { Zap, Clock, Calendar } from "lucide-react";
+import { Zap, Clock, Calendar, Trash2, X } from "lucide-react";
 
 const availablePlatforms: {
   value: Platform;
@@ -112,6 +113,21 @@ export default function CreatePostPage() {
     handlePublishNow,
     handleSchedulePost,
   } = useCreatePost();
+
+  // -----------------------------
+  // Image input ref & removal
+  // -----------------------------
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleRemoveImage() {
+    dispatch(setImageUrl(""));
+    dispatch(setUploadStatus("IDLE"));
+    dispatch(setUploadProgress(0));
+    dispatch(setErrorMessage(""));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
 
   // -----------------------------
   // ImageKit authentication
@@ -310,15 +326,30 @@ export default function CreatePostPage() {
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Image Upload Card */}
             <div className="bg-white rounded-2xl border border-[#EAE3D9] p-6 shadow-xs space-y-4">
-              <div>
-                <h2 className="text-sm font-bold text-neutral-900">Media Asset</h2>
-                <p className="text-xs text-neutral-500 mt-0.5">
-                  Upload post image (ImageKit CDN).
-                </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-sm font-bold text-neutral-900">Media Asset</h2>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Upload post image (ImageKit CDN).
+                  </p>
+                </div>
+                {imageUrl && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRemoveImage}
+                    className="h-7 px-2.5 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 font-medium flex items-center gap-1.5 cursor-pointer rounded-lg"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Remove</span>
+                  </Button>
+                )}
               </div>
 
               <div className="relative">
                 <input
+                  ref={fileInputRef}
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
@@ -344,16 +375,56 @@ export default function CreatePostPage() {
               {uploadStatus === "SUCCESS" && (
                 <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium flex items-center justify-between">
                   <span>✓ Media uploaded to ImageKit CDN</span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="text-xs text-red-600 hover:text-red-700 hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span>Remove</span>
+                  </button>
+                </div>
+              )}
+
+              {uploadStatus === "ERROR" && errorMessage && (
+                <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-center justify-between">
+                  <span>{errorMessage}</span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="text-xs text-red-700 hover:underline font-semibold cursor-pointer"
+                  >
+                    Clear
+                  </button>
                 </div>
               )}
 
               {imageUrl ? (
-                <div className="relative rounded-xl overflow-hidden border border-[#EAE3D9] bg-neutral-900 aspect-video flex items-center justify-center">
+                <div className="relative group rounded-xl overflow-hidden border border-[#EAE3D9] bg-neutral-900 aspect-video flex items-center justify-center">
                   <img
                     src={imageUrl}
                     alt="Post preview"
                     className="max-h-[300px] w-full object-contain"
                   />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="bg-red-600 hover:bg-red-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold backdrop-blur-xs flex items-center gap-1.5 shadow-lg transition-transform transform active:scale-95 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove Image</span>
+                    </button>
+                  </div>
+                  {/* Top-right remove badge button */}
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="absolute top-2.5 right-2.5 bg-neutral-900/80 hover:bg-red-600 text-white p-1.5 rounded-lg text-xs backdrop-blur-xs flex items-center shadow-md transition-colors cursor-pointer"
+                    title="Remove image"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-[#EAE3D9] bg-[#FAF8F5]/60 p-10 text-center text-neutral-400 text-xs">

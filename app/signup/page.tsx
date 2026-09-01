@@ -141,6 +141,18 @@ export default function SignUpPage() {
               <span>{loading ? "Creating account..." : "Create Account"}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
+
+            <p className="text-[11px] text-center text-neutral-400 leading-tight pt-1">
+              By registering, you agree to our{" "}
+              <Link href="/terms" className="text-neutral-700 underline hover:text-black">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="text-neutral-700 underline hover:text-black">
+                Privacy Policy
+              </Link>
+              .
+            </p>
           </form>
 
           <p className="text-center text-xs text-neutral-500">

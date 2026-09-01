@@ -142,6 +142,12 @@ export default function PrivacyContent() {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
+            <Link
+              href="/terms"
+              className="hidden lg:inline-block text-xs font-medium text-[#F3EBDD]/70 hover:text-white transition-colors"
+            >
+              Terms of Service
+            </Link>
             <button
               onClick={handlePrint}
               className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-neutral-700 hover:border-neutral-500 text-xs font-medium text-[#F3EBDD]/80 hover:text-white transition-all"
@@ -158,7 +164,7 @@ export default function PrivacyContent() {
               <span>Return Home</span>
             </Link>
             <Link
-              href="/login"
+              href="/automation"
               className="px-4 py-2 rounded-full bg-[#A67C3D] hover:bg-[#8f6b34] text-white text-xs sm:text-sm font-semibold transition-all shadow-[0_2px_10px_rgba(166,124,61,0.3)]"
             >
               Client Portal

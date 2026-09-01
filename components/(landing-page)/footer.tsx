@@ -72,6 +72,9 @@ export default function Footer() {
           <Link href="/#contact" className="hover:text-[#A67C3D] transition-colors">
             Contact
           </Link>
+          <Link href="/terms" className="hover:text-[#A67C3D] transition-colors">
+            Terms of Service
+          </Link>
           <Link href="/privacy" className="hover:text-[#A67C3D] transition-colors">
             Privacy Policy
           </Link>
@@ -80,6 +83,10 @@ export default function Footer() {
         {/* Copyright & Legal */}
         <div className={`${poppins.className} text-xs text-[#F3EBDD]/40 text-center md:text-right flex flex-col sm:flex-row items-center gap-2 sm:gap-4`}>
           <span>© {new Date().getFullYear()} chartes.tech. All rights reserved.</span>
+          <span className="hidden sm:inline text-[#F3EBDD]/20">•</span>
+          <Link href="/terms" className="hover:text-[#A67C3D] transition-colors underline-offset-4 hover:underline">
+            Terms of Service
+          </Link>
           <span className="hidden sm:inline text-[#F3EBDD]/20">•</span>
           <Link href="/privacy" className="hover:text-[#A67C3D] transition-colors underline-offset-4 hover:underline">
             Privacy Policy

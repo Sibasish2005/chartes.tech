@@ -173,6 +173,16 @@ export default function Login() {
               Sign up
             </Link>
           </p>
+
+          <p className="text-[11px] text-center text-neutral-400">
+            <Link href="/terms" className="hover:text-neutral-700 underline">
+              Terms of Service
+            </Link>{" "}
+            •{" "}
+            <Link href="/privacy" className="hover:text-neutral-700 underline">
+              Privacy Policy
+            </Link>
+          </p>
         </div>
       </div>
     </main>

@@ -138,7 +138,7 @@ Create a `.env` file in the project root with the following configuration:
 
 ```env
 # Database (Neon PostgreSQL)
-DATABASE_URL="postgresql://user:password@ep-xyz.region.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="postgresql://user:password@ep-xyz.region.aws.neon.tech/neondb?sslmode=verify-full"
 
 # Application Base URL
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
