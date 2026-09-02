@@ -1,48 +1,46 @@
-# PRD: Build in Public
+# PRD: GitHub → AI Social Posting Engine
 
-**Project:** [PROJECT_NAME] (existing social-media automation platform)
-**Author:** [YOUR_NAME]
-**Status:** Draft — MVP scoping
-**Last updated:** 2026-08-26
+**Project:** `chartes.tech` (`omnicode-beta`)  
+**Author:** Core Engineering  
+**Status:** Feature Specification & Architecture Roadmap  
+**Placement in Roadmap:** Priority Step (Build before Event-Driven AI Job Search & Recruiter Outreach Agent)  
 
 ---
 
 ## 1. Problem Statement
 
-Developers, founders, freelancers, and technical builders ("build in public" users) generate a high volume of raw GitHub activity (commits, PRs, releases) but most of it is not worth sharing publicly. Manually reviewing activity and drafting social posts is time-consuming, and naive "post every commit" automation produces spam (e.g., 15 commits/day where only one represents a real milestone).
+Developers, founders, freelancers, and technical builders ("build in public" creators) generate continuous GitHub activity (commits, PR merges, releases), but most of it is not worth sharing publicly. Manually reviewing activity and drafting social posts is time-consuming, while naive "post every commit" automation produces spam (e.g. 15 commits/day where only one represents a real milestone).
 
-There is no existing workflow in [PROJECT_NAME] that converts development activity into vetted, human-approved social content.
+`chartes.tech` bridges this gap with an intelligent, deterministic AI decision layer and a human-in-the-loop approval gate. When meaningful changes are pushed or merged, the system evaluates significance, generates ready-to-publish social copy, and stops at a review inbox for human approval.
 
-## 2. Goals
+## 2. Goals & Key Principles
 
-- Detect *meaningful* development milestones from GitHub activity, not raw events.
-- Generate a ready-to-edit social media draft (caption + image) from that milestone.
-- Preserve full human control — no activity may be auto-published.
-- Reuse existing platform primitives (`Post`, `PostPlatform`, Scheduler, Worker, ImageKit, OAuth) rather than building a parallel system.
+- **Deterministic Hard Boundary First:** An LLM alone never decides whether to post. Deterministic rules (branch eligibility, commit relevance, magnitude, sensitive path exclusions, cooldowns) provide the safety boundary before any AI generation.
+- **Context-Aware AI Generation:** AI summarizes code changes, extracts key angles, and produces structured, schema-validated social copy (caption + hashtags + media suggestions) without ever exposing private source code or secrets.
+- **Mandatory Human-in-the-Loop Approval:** No post is ever published automatically. Every proposal enters `WAITING_FOR_APPROVAL` for human review, editing, scheduling, or rejection.
+- **Multi-Platform Reuse:** Approved drafts feed directly into the existing publishing pipeline (`Post` → `PostPlatform` → `Scheduler` / `Worker`) targeting LinkedIn, Facebook Pages, and Instagram.
 
-### Non-Goals (MVP)
+### Non-Goals
 
-- No autonomous AI agent or AI-initiated publishing.
-- No AI-generated images (image sourcing via Pexels only).
-- No continuous/cron-based monitoring (manual trigger only, for v1).
-- No platform-specific caption variants (single general draft for MVP).
+- No autonomous or unverified publishing without human review.
+- No raw commit dumping or posting on every trivial push.
+- No exposure of private repository secrets or `.env` files to AI models.
 
 ## 3. Target Users
 
-**Primary persona:** [TARGET_USER_PERSONA] — e.g., an indie developer or startup founder actively building a product who wants to share progress on LinkedIn/Instagram/Facebook without manually tracking what's worth posting.
+Indie hackers, startup founders, open-source maintainers, and developer advocates building in public who want to maintain an active, high-quality social presence on LinkedIn, Facebook, and Instagram without manual drafting friction.
 
 ## 4. User Stories
 
 | ID | As a... | I want to... | So that... |
 |----|---------|---------------|------------|
-| US-1 | User | connect my GitHub account | the app can read my repository activity |
-| US-2 | User | select a repository, branch, and activity types to monitor | I control scope of what's analyzed |
-| US-3 | User | click "Check GitHub Activity" | I get an on-demand milestone check instead of waiting for a cron job |
-| US-4 | User | see nothing happen when activity isn't meaningful | I'm not spammed with low-value drafts |
-| US-5 | User | see a generated draft (caption + image + reasoning) when a milestone is detected | I can decide whether to share it |
-| US-6 | User | edit, discard, save, publish, or schedule a draft | I retain final control over what's posted |
-| User | User | trust that sensitive commits (secrets, internal architecture) are never auto-shared | my private work stays private |
-| US-8 | User | disconnect GitHub at any time | I can revoke access when needed |
+| US-1 | User | connect my GitHub account & repositories | the app can receive push and PR events |
+| US-2 | User | configure eligible branches, cooldowns, and sensitivity rules | I control which code triggers social evaluations |
+| US-3 | User | receive webhook-driven event evaluations automatically | I don't have to manually trigger checks |
+| US-4 | User | see trivial commits (docs, locks, formatting) silently ignored | my inbox is only populated with real milestones |
+| US-5 | User | see AI-generated post proposals with diff summaries & reasoning | I can quickly assess and refine the content |
+| US-6 | User | edit, approve & publish now, schedule, or reject proposals | I retain 100% final authority over published content |
+| US-7 | User | trust that secrets and sensitive paths are strictly excluded | my private project details stay secure |
 
 ## 5. Functional Requirements
 
@@ -105,61 +103,62 @@ There is no existing workflow in [PROJECT_NAME] that converts development activi
 ## 6. System Architecture (Conceptual)
 
 ```
-GitHub API → Activity Collection → Aggregation → AI Classification (Groq)
-   → [if shouldPost] Caption Generation → Image Search (Pexels)
-   → ImageKit Upload → Draft (Post, status=DRAFT)
-   → Human Review (Edit / Discard / Save / Publish / Schedule)
-   → Existing Publishing Engine (Scheduler → Worker → Platform Publisher)
+GitHub Webhook Event (push / merge)
+   → HMAC-SHA256 Signature Verification
+   → Normalized Event Persistence (processingStatus: RECEIVED)
+   → Deterministic Filter (branch, relevance, magnitude, sensitive paths, cooldown)
+   → [if passes] AI Change Analyzer (Zod schema: decision, angle, caption, hashtags)
+   → Proposal Created (status: WAITING_FOR_APPROVAL)
+   → Human Approval Gate (/dashboard AI Review Inbox)
+   → [User Action: Edit / Reject / Approve & Publish / Approve & Schedule]
+   → Existing Multi-Platform Publishing Engine (Post → PostPlatform → Worker → LinkedIn / Facebook / Instagram)
 ```
 
-Key architectural rule: the Build-in-Public service is a **content source**, feeding into the existing `Post` → `PostPlatform` → Scheduler → Worker pipeline. It must not have a direct dependency on any platform publisher.
+Key architectural rule: the GitHub Social Posting service is a **content proposal source**, feeding into the existing `Post` → `PostPlatform` → Scheduler → Worker pipeline. It must not have a direct dependency on any platform publisher.
 
 ## 7. Data Model (Additions)
 
-To be finalized against the current Prisma schema. Anticipated additions:
+Extended in Prisma without altering existing social publisher primitives:
 
-**GitHubMonitor**
-- userId, githubAccountId, repositoryId, repositoryName, branch, enabledActivityTypes, lastCheckedAt, lastProcessedActivityId
-
-**GitHubActivity**
-- id, repositoryId, activityType, timestamp, processingStatus, draftPostId (nullable FK to `Post`)
+- **`GitHubRepository`**: `id`, `userId`, `providerRepoId`, `owner`, `name`, `fullName`, `defaultBranch`, `enabled`, `createdAt`.
+- **`GitHubEvent`**: `id`, `repositoryId`, `eventId`, `eventType`, `commitSha`, `payloadHash`, `receivedAt`, `processingStatus`.
+- **`SocialPostProposal`**: `id`, `userId`, `repositoryId`, `eventId`, `decision`, `confidence`, `reason`, `changeSummary`, `draftContent`, `status` (`WAITING_FOR_APPROVAL`, `APPROVED`, `REJECTED`), `createdAt`.
+- **`AIReviewAudit`**: `id`, `proposalId`, `model`, `promptVersion`, `ruleResults`, `generatedAt`, `approvedAt`, `rejectedAt`.
 
 Reuse existing: `User`, `Account`, `Session`, `Post`, `PostPlatform`.
 
 ## 8. Security Requirements
 
-- All operations authenticate the current user; ownership is verified for GitHub connection, repository, monitor config, and drafts.
-- Cross-user access to another user's GitHub connection, repositories, monitor config, or drafts must be impossible.
-- GitHub tokens, Pexels API key, ImageKit private key, and AI provider key remain server-side only.
-- AI component has no tool access and cannot trigger any application action (publish, schedule, DB write) directly.
+- All operations authenticate the current user; ownership is verified for GitHub connections, repositories, and proposal approvals.
+- Webhook endpoint (`POST /api/integrations/github/webhook`) strictly verifies `x-hub-signature-256` secret tokens before ingestion.
+- No repository source code, environment secrets, private keys, or `.env` files are ever sent to LLMs.
+- AI output is always validated with Zod and never trusted as authoritative without human approval.
 
 ## 9. Technical Constraints
 
-- **Stack:** [TECHNICAL_STACK] — indicative from spec: Next.js/TypeScript frontend + API routes, Prisma ORM, Groq for AI classification/caption generation, Pexels API for imagery, existing ImageKit integration for media hosting.
-- AI provider (Groq) is used strictly for bounded classification and text generation — not as an autonomous agent.
-- Must integrate with existing OAuth, Post, PostPlatform, Scheduler, and Worker subsystems without duplicating them.
+- **Stack:** Next.js 16 (App Router), TypeScript, Prisma 7, Tailwind CSS v4, Redux Toolkit.
+- AI analysis produces structured Zod outputs (`{ decision, confidence, reason, projectSummary, changeSummary, postingAngle, draftCaption, hashtags, mediaSuggestion, warnings }`).
+- Directly integrates with existing `LinkedIn`, `Facebook`, and `Instagram` publishers and `cron-job.org` background worker without duplication.
 
-## 10. MVP Phasing
+## 10. Implementation Order
 
-| Phase | Scope |
-|-------|-------|
-| 1 | GitHub OAuth connection |
-| 2 | Repository/branch selection |
-| 3 | Activity fetch (commits, PRs, releases) |
-| 4 | Activity aggregation |
-| 5 | AI classification (shouldPost decision) |
-| 6 | Caption generation |
-| 7 | Image search (Pexels) |
-| 8 | ImageKit upload |
-| 9 | Draft creation (Post, status=DRAFT) |
-| 10 | Review UI (edit/discard/save) |
-| 11 | Publish Now / Schedule via existing engine |
-| 12 | Automated/cron-based monitoring (post-MVP) |
+| Step | Milestone |
+|---|---|
+| 1 | GitHub OAuth connection & repository discovery (`POST /api/integrations/github/connect`, `GET /api/github/repositories`) |
+| 2 | GitHub webhook endpoint with HMAC-SHA256 signature verification & event persistence |
+| 3 | Deterministic change-significance engine with configurable rules (branch, magnitude, exclusions, cooldown) |
+| 4 | Asynchronous background processing path for GitHub events |
+| 5 | AI change analysis with structured Zod output validation |
+| 6 | Social draft generation feeding existing Post/Composer schema |
+| 7 | Human approval inbox UI & proposal state machine |
+| 8 | Seamless handoff of approved proposals to active LinkedIn / Facebook / Instagram publishers |
+| 9 | Idempotency, retries, audit logs, and failure handling |
+| 10 | End-to-end verification with live GitHub webhooks and test social accounts |
 
 ## 11. Acceptance Criteria
 
 - User can connect and disconnect GitHub.
-- User can select repository, branch, and activity types.
+- User can select repositories, branches, and automation settings.
 - Manual "Check GitHub Activity" fetches and aggregates activity without generating one post per commit.
 - AI decision is structured, schema-validated; invalid output blocks draft creation.
 - Minor/non-meaningful changes never produce a draft.

@@ -52,7 +52,7 @@ flowchart TD
 
     subgraph APILayer["Next.js Server API Routes & Server Actions"]
         API_Auth["/api/auth/* (signup, signin, logout, me, google)"]
-        API_Social["/api/social/* (linkedin, connected, disconnect)"]
+        API_Social["/api/social/* (linkedin, facebook, connected, disconnect)"]
         API_Posts["/api/posts/* (POST, DELETE [id])"]
         API_Upload["/api/upload-auth (ImageKit HMAC)"]
         API_Cron["/api/cron/publish (Cron Worker)"]
@@ -62,6 +62,8 @@ flowchart TD
         AuthLib["lib/auth.ts (getCurrentUser)"]
         WorkerLib["lib/automation/worker.ts (processScheduledPosts)"]
         LinkedInPub["lib/automation/publisher/linkedin.ts (REST v202601)"]
+        FacebookPub["lib/automation/publisher/facebook.ts (Graph API v21.0)"]
+        InstagramPub["lib/automation/publisher/instagram.ts (2-Step Containers)"]
         PrismaClient["lib/prisma.ts (Prisma 7 + PG Driver Adapter)"]
     end
 
@@ -70,13 +72,15 @@ flowchart TD
         ImageKitCDN["ImageKit.io (Media CDN & Storage)"]
         GoogleOAuth["Google Identity Services (OAuth2 / OIDC)"]
         LinkedInAPI["LinkedIn REST API & Media Upload Server"]
-        CronTrigger["Vercel Cron / External Cron Scheduler"]
+        MetaGraphAPI["Meta Graph API v21.0 (Facebook Pages & Instagram)"]
+        CronTrigger["External Scheduler (cron-job.org / Webhooks)"]
     end
 
     ClientLayer <--> APILayer
     APILayer <--> CoreServices
     CoreServices <--> PostgresDB
     CoreServices <--> LinkedInAPI
+    CoreServices <--> MetaGraphAPI
     CoreServices <--> GoogleOAuth
     UI_Composer <--> ImageKitCDN
     APILayer <--> ImageKitCDN
@@ -559,11 +563,13 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    participant CronService as Vercel Cron / Scheduler
+    participant CronService as External Cron (cron-job.org)
     participant CronRoute as app/api/cron/publish/route.ts
     participant Worker as lib/automation/worker.ts (processScheduledPosts)
     participant DB as PostgreSQL (Post, PostPlatform, Account)
-    participant Publisher as lib/automation/publisher/linkedin.ts
+    participant LIPub as lib/automation/publisher/linkedin.ts
+    participant FBPub as lib/automation/publisher/facebook.ts
+    participant IGPub as lib/automation/publisher/instagram.ts
 
     CronService->>CronRoute: GET /api/cron/publish (Header: Authorization: Bearer <CRON_SECRET>)
     CronRoute->>CronRoute: Validate CRON_SECRET against process.env.CRON_SECRET
@@ -580,22 +586,25 @@ sequenceDiagram
             
             alt platform.platform === "LINKEDIN"
                 Worker->>DB: prisma.account.findFirst({ where: { userId: post.userId, provider: "linkedin" } })
-                DB-->>Worker: account { accessToken, providerAccountId }
-                
-                alt Missing LinkedIn Account or Access Token
-                    Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: "FAILED" } })
-                else Credentials Valid
-                    Worker->>Publisher: publishToLinkedIn({ accessToken, authorUrn: "urn:li:person:" + account.providerAccountId, caption: post.caption, imageUrl: post.imageUrl })
-                    Publisher-->>Worker: { success: boolean, externalPostId, error }
-                    
-                    alt Success
-                        Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: "PUBLISHED", publishedAt: now } })
-                    else Failure
-                        Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: "FAILED" } })
-                    end
+                alt Credentials Valid
+                    Worker->>LIPub: publishToLinkedIn({ accessToken, authorUrn, caption, imageUrl })
+                    LIPub-->>Worker: { success: boolean, externalPostId, error }
+                    Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: success ? "PUBLISHED" : "FAILED" } })
                 end
-            else Unsupported Platform (Instagram/Facebook)
-                Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: "FAILED" } })
+            else platform.platform === "FACEBOOK"
+                Worker->>DB: prisma.account.findFirst({ where: { userId: post.userId, provider: "facebook" } })
+                alt Credentials Valid
+                    Worker->>FBPub: publishToFacebook({ pageAccessToken, pageId, caption, imageUrl })
+                    FBPub-->>Worker: { success: boolean, externalPostId, error }
+                    Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: success ? "PUBLISHED" : "FAILED" } })
+                end
+            else platform.platform === "INSTAGRAM"
+                Worker->>DB: prisma.account.findFirst({ where: { userId: post.userId, provider: "instagram" } })
+                alt Credentials Valid & Has Image
+                    Worker->>IGPub: publishToInstagram({ accessToken, igUserId, caption, imageUrl })
+                    IGPub-->>Worker: { success: boolean, externalPostId, error }
+                    Worker->>DB: prisma.postPlatform.update({ where: { id: platform.id }, data: { status: success ? "PUBLISHED" : "FAILED" } })
+                end
             end
         end
 

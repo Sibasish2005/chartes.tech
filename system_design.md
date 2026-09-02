@@ -89,13 +89,13 @@ graph TB
     end
 
     subgraph Cron Engine ["Trigger Engine"]
-        VercelCron["Vercel Cron / External Dispatcher"]
+        CronTrigger["External Scheduler (cron-job.org / Webhook Pinger)"]
     end
 
     subgraph External Platforms ["External APIs & Networks"]
         GoogleOAuth["Google OAuth 2.0 / OIDC"]
         LinkedInAPI["LinkedIn REST API (v202601 + Images API)"]
-        MetaGraph["Meta Graph API (Facebook / Instagram)"]
+        MetaGraph["Meta Graph API v21.0 (Facebook Pages & Instagram)"]
         GroqAI["Groq AI LLM Engine (Llama 3 / Mixtral)"]
         PexelsAPI["Pexels Stock Image API"]
     end
@@ -117,14 +117,15 @@ graph TB
     %% Auth & Social Integrations
     RouteHandlers -->|OAuth Handshake| GoogleOAuth
     RouteHandlers -->|OAuth Handshake| LinkedInAPI
+    RouteHandlers -->|OAuth Handshake| MetaGraph
 
     %% Worker Automation
-    VercelCron -->|Bearer CRON_SECRET| RouteHandlers
+    CronTrigger -->|Bearer CRON_SECRET| RouteHandlers
     RouteHandlers -->|Trigger| Worker
     Worker --> PrismaORM
     Worker -->|Fetch image asset| IK
     Worker -->|2-Step Media Upload & Post| LinkedInAPI
-    Worker -.->|Future Integration| MetaGraph
+    Worker -->|Photos & Containers Media Publish| MetaGraph
 
     %% AI Pipeline
     Worker -.->|Milestone Classification| GroqAI
@@ -233,7 +234,7 @@ Direct-to-CDN Signed Token Flow (chartes.tech):
 ### ADR-007: Cron Dispatch & Worker Isolation Model
 
 * **Context:** Triggering background publishing in a serverless environment without maintaining costly 24/7 standalone worker servers for early-stage MVP.
-* **Decision:** Protected HTTP Cron Endpoint (`POST /api/cron/publish`) triggered by Vercel Cron or external schedulers.
+* **Decision:** Protected HTTP Cron Endpoint (`GET /api/cron/publish`) triggered by zero-hosting external schedulers (e.g. `cron-job.org`) or webhook pingers.
 * **Security & Failure Isolation:**
   * **Timing Attack Resistant Secret:** Guarded with `Authorization: Bearer <CRON_SECRET>` header.
   * **Batch Throttling:** Worker pulls batches of 10 posts (`take: 10`) ordered by `scheduledAt: "asc"` to prevent serverless execution timeouts (10-15s window).
@@ -411,39 +412,42 @@ sequenceDiagram
 
 ---
 
-### Flow 4: Background Scheduling Worker & 2-Step Binary Publishing
+### Flow 4: Background Scheduling Worker & Multi-Platform Publishing
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Cron as Vercel Cron / Scheduler
+    participant Cron as External Scheduler (cron-job.org)
     participant Route as /api/cron/publish
     participant Worker as Automation Worker (lib/automation/worker.ts)
     participant DB as PostgreSQL (Prisma)
     participant IK as ImageKit CDN
-    participant LI as LinkedIn REST API (/rest/posts & /rest/images)
+    participant LI as LinkedIn REST API
+    participant Meta as Meta Graph API (Facebook & Instagram)
 
-    Cron->>Route: POST /api/cron/publish (Bearer CRON_SECRET)
+    Cron->>Route: GET /api/cron/publish (Header: Bearer CRON_SECRET)
     Route->>Worker: processScheduledPosts()
     Worker->>DB: findMany(Post where status=SCHEDULED & scheduledAt <= now)
     loop For Each Scheduled Post
-        Worker->>DB: findFirst(Account where userId=post.userId & provider=linkedin)
-        alt Has Attached Image
-            Worker->>IK: fetch(post.imageUrl) -> ArrayBuffer
-            Worker->>LI: POST /rest/images?action=initializeUpload
-            LI-->>Worker: { uploadUrl, imageUrn: "urn:li:image:123" }
-            Worker->>LI: PUT uploadUrl (Binary image payload)
+        loop For Each Target Platform
+            alt Platform === LINKEDIN
+                Worker->>DB: findFirst(Account: provider=linkedin)
+                alt Has Attached Image
+                    Worker->>IK: fetch(imageUrl) -> ArrayBuffer
+                    Worker->>LI: Initialize & Upload Binary Image
+                end
+                Worker->>LI: POST /rest/posts
+            else Platform === FACEBOOK
+                Worker->>DB: findFirst(Account: provider=facebook)
+                Worker->>Meta: POST /{page-id}/photos or /{page-id}/feed
+            else Platform === INSTAGRAM
+                Worker->>DB: findFirst(Account: provider=instagram)
+                Worker->>Meta: POST /{ig-user-id}/media (Container)
+                Worker->>Meta: POST /{ig-user-id}/media_publish
+            end
+            Worker->>DB: update PostPlatform status="PUBLISHED" or "FAILED"
         end
-        Worker->>LI: POST /rest/posts (authorUrn, commentary, media: { id: imageUrn })
-        alt LinkedIn API Success
-            LI-->>Worker: 201 Created (Header x-restli-id)
-            Worker->>DB: update PostPlatform status="PUBLISHED", publishedAt=now()
-            Worker->>DB: update Post status="PUBLISHED"
-        else LinkedIn API Failure (Token expired / Rate limited)
-            LI-->>Worker: 4xx/5xx Error Response
-            Worker->>DB: update PostPlatform status="FAILED"
-            Worker->>DB: update Post status="FAILED"
-        end
+        Worker->>DB: update Post status="PUBLISHED" or "FAILED"
     end
     Worker-->>Route: { processed, published, failed }
     Route-->>Cron: 200 OK
@@ -591,11 +595,127 @@ graph LR
    * *Scale Solution:* Implement automated proactive token refresh workers utilizing OAuth `refresh_token` before access tokens expire.
 
 ### 2. Engineering Roadmap
-* [ ] **Phase 1 — Meta Graph API Integration:** Facebook Pages & Instagram Professional publishing.
+* [x] **Phase 1 — Meta Graph API Integration:** Facebook Pages & Instagram Professional publishing (Live).
 * [ ] **Phase 2 — X (Twitter API v2) & Bluesky AT Protocol:** Short-form microblogging support.
-* [ ] **Phase 3 — Automated GitHub Webhooks:** Instantaneous event ingestion replacing manual polling.
+* [ ] **Phase 3 — GitHub → AI Social Posting Engine + Human Approval (NEW — BUILD NEXT):** Deterministic AI build-in-public posting engine.
 * [ ] **Phase 4 — Advanced Analytics Dashboard:** Ingest live impressions, clicks, and engagement telemetry back into the user dashboard.
+* [ ] **Phase 5 — Event-Driven AI Job Search & Recruiter Outreach Agent (NEXT MAJOR FEATURE):** Autonomous career copilot subsystem.
+
+---
+
+### 3. Future Architectural Extension: GitHub → AI Social Posting Subsystem (Build Next)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Developer
+    participant GH as GitHub (Push/Merge)
+    participant WH as /api/integrations/github/webhook
+    participant Filter as Deterministic Rule Engine
+    participant AI as AI Change Analyzer (Zod Schema)
+    participant DB as PostgreSQL (GitHubEvent & Proposal)
+    participant Inbox as Human Approval Inbox (/dashboard)
+    participant Worker as Existing Publishing Pipeline
+
+    Dev->>GH: git push (commits to main)
+    GH->>WH: POST Webhook (HMAC-SHA256 Signature)
+    WH->>WH: Verify x-hub-signature-256
+    WH->>DB: Store GitHubEvent (processingStatus=RECEIVED)
+    WH->>Filter: Evaluate Change Context
+    alt Fails Deterministic Rules (Merge noise, .env, lockfile, cooldown)
+        Filter->>DB: Mark GitHubEvent FILTERED_OUT
+    else Passes Deterministic Rules
+        Filter->>AI: Analyze commit messages, diff summary, changed paths
+        AI->>AI: Zod Validation (decision, angle, draftCaption, hashtags)
+        AI->>DB: Upsert SocialPostProposal (status=WAITING_FOR_APPROVAL)
+        DB-->>Inbox: Push proposal notification
+        actor User as Human Author
+        User->>Inbox: Review Draft Proposal
+        alt User Rejects
+            User->>DB: PATCH status=REJECTED
+        else User Edits / Approves
+            User->>DB: Approve & Hand off to Post/PostPlatform
+            DB->>Worker: Trigger Scheduled / Instant Multi-Platform Sweep
+            Worker->>Worker: Dispatch to LinkedIn, Facebook, Instagram
+        end
+    end
+```
+
+#### Deterministic AI Decision Layer (Hard Safety Boundary)
+| Rule | Operational Decision |
+|---|---|
+| **Branch Eligibility** | Only configured branches (e.g. `main`, `master`, `release`). |
+| **Commit Relevance** | Ignores trivial commits, dependency noise (e.g. `package-lock.json`), formatting, and generated build artifacts. |
+| **Change Magnitude** | Enforces minimum code, configuration, or documentation change thresholds. |
+| **Sensitive Paths** | Automatically excludes `.env`, secrets, certificates, internal private directories, and security keys. |
+| **Duplicate & Cooldown** | Prevents multiple posts for the same commit SHA and enforces time cooldowns between automated proposals. |
+| **Human Approval Default** | The AI never publishes directly; every proposal stops at `WAITING_FOR_APPROVAL` for human review, edits, or rejection. |
+
+#### Human-in-the-Loop State Machine
+`RECEIVED` → `FILTERED_OUT` | `AI_ANALYZING` → `DRAFT_READY` → `WAITING_FOR_APPROVAL` → `REJECTED` | `APPROVED` → `SCHEDULED` | `PUBLISHED` (via existing multi-platform pipeline).
+
+#### Database Extensions (Prisma Models)
+* **`GitHubRepository`**: `id`, `userId`, `providerRepoId`, `owner`, `name`, `fullName`, `defaultBranch`, `enabled`, `createdAt`.
+* **`GitHubEvent`**: `id`, `repositoryId`, `eventId`, `eventType`, `commitSha`, `payloadHash`, `receivedAt`, `processingStatus`.
+* **`SocialPostProposal`**: `id`, `userId`, `repositoryId`, `eventId`, `decision`, `confidence`, `reason`, `changeSummary`, `draftContent`, `status`, `createdAt`.
+* **`AIReviewAudit`**: `id`, `proposalId`, `model`, `promptVersion`, `ruleResults`, `generatedAt`, `approvedAt`, `rejectedAt`.
+
+---
+
+### 4. Future Architectural Extension: Event-Driven AI Job Search & Recruiter Outreach Subsystem (Next Major Feature)
+
+```mermaid
+graph TD
+    subgraph Client & UI ["Next.js Frontend & Application Tracker"]
+        SpreadsheetUI["Spreadsheet-like CRM (Jobs, Outreach, Interviews)"]
+        ResumeUpload["Resume Parser (CandidateProfile Extraction)"]
+        HumanReview["Human Approval Gate (WAIT_FOR_APPROVAL)"]
+    end
+
+    subgraph Event Queue ["Asynchronous Event Backbone (BullMQ + Redis)"]
+        Queue["BullMQ Queue / Event Dispatcher"]
+        Events["Typed Events: JOB_FOUND, JOB_MATCHED, RECRUITER_FOUND, EMAIL_SENT"]
+    end
+
+    subgraph Agentic Pipeline ["AI & Workflow Orchestration (LangGraph)"]
+        JobAgent["Job Discovery & Normalizer"]
+        MatchAgent["Hybrid Matcher (Rules + pgvector + LLM)"]
+        RecruiterAgent["Recruiter Discovery (Public/Verified Sources Only)"]
+        OutreachAgent["Personalized Outreach Drafter"]
+        EmailIntelligence["Email Classifier (Interview / Rejection / Follow-up)"]
+    end
+
+    subgraph Data & Storage ["Data Tier"]
+        DB_Vector[("PostgreSQL + pgvector")]
+        Schema["users, resumes, jobs, job_matches, recruiters, applications"]
+    end
+
+    subgraph Integrations ["External Communications"]
+        GmailOAuth["Gmail API (Google Workspace OAuth 2.0)"]
+        PubSub["Gmail Change Notifications / Webhooks"]
+    end
+
+    ResumeUpload -->|Structured JSON| DB_Vector
+    JobAgent -->|Normalize & Dedupe| Queue
+    Queue --> MatchAgent
+    MatchAgent -->|Score >= Threshold| RecruiterAgent
+    RecruiterAgent --> OutreachAgent
+    OutreachAgent --> HumanReview
+    HumanReview -->|OUTREACH_APPROVED| GmailOAuth
+    GmailOAuth -->|Send Email & Track Thread ID| DB_Vector
+    PubSub -->|RECRUITER_EMAIL_RECEIVED| EmailIntelligence
+    EmailIntelligence -->|Classify & Extract Intent| SpreadsheetUI
+```
+
+#### Core Design Principles & Guardrails:
+1. **Event-Driven Asynchronous Model:** Decouples discovery, analysis, LLM scoring, and email actions via typed events (`type AppEvent = { type: string, ... }`), ensuring failed AI requests can be safely retried without blocking Next.js route handlers.
+2. **Hybrid Matching Strategy:** Avoids burning costly tokens by checking deterministic criteria first (required skills, years of experience, work authorization), then computing cosine similarity via **`pgvector` embeddings**, and lastly executing LLM evaluation for edge-case reasoning.
+3. **Human-in-the-Loop Safeguards:** Outbound recruiter emails default strictly to `WAIT_FOR_APPROVAL`. Automated sending is never permitted without explicit user confirmation.
+4. **Anti-Hallucination Contact Governance:** Recruiter email addresses must strictly be sourced from permitted public listings or official company domain registries—never hallucinated or guessed from naming patterns.
+5. **Cost-Aware Multi-Tier Models:** Employs lightweight, free/low-cost models for initial classification (e.g. Gemini Flash / OpenRouter low-tier) and reserves advanced reasoning models solely for contextual outreach drafting and complex candidate-JD alignment.
 
 ---
 
 *Authored for the `chartes.tech` core engineering repository.*
+
+

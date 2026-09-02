@@ -399,10 +399,12 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
   - Calls `processScheduledPosts()` background worker.
 - **Worker Execution Pipeline (`lib/automation/worker.ts`):**
   - Queries scheduled posts ready for release (`status: "SCHEDULED"`, `scheduledAt <= now`).
-  - Fetches associated OAuth tokens and dispatches to LinkedIn REST API (with 2-step image uploads).
+  - Fetches associated OAuth tokens and dispatches to LinkedIn REST API (with 2-step image uploads), Facebook Pages, and Instagram.
   - Cascades status to `PUBLISHED` or `FAILED`.
-- **Vercel Cron Configuration (`vercel.json`):**
-  - Added native Vercel Cron configuration (`schedule: "* * * * *"`) to trigger automatic sweeps every minute upon deployment.
+- **Zero-Hosting Scheduler Migration (`cron-job.org`):**
+  - Migrated from Vercel Hobby-restricted cron to 100% free external HTTP cron scheduler (`cron-job.org`).
+  - Triggers automated sweeps every 1 minute with `Authorization: Bearer <CRON_SECRET>` headers without dedicated servers.
+  - Cleaned `vercel.json` (`{}`) to prevent hobby plan cron limitations.
 
 ---
 
@@ -422,15 +424,81 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ---
 
+### STEP 26 — Meta Graph API (Facebook Pages & Instagram Professional) Integration ✅
+- **Meta OAuth 2.0 3-Legged Authentication Flow:**
+  - `app/api/social/facebook/route.ts`: Initiates secure CSRF-protected redirect to Meta Dialog (`v21.0`) requesting Facebook Page and Instagram content publishing permissions (`pages_show_list`, `pages_read_engagement`, `pages_manage_posts`, `instagram_basic`, `instagram_content_publish`, `business_management`).
+  - `app/api/social/facebook/callback/route.ts`: Exchanges temporary authorization code for short-lived token, then exchanges for 60-day Long-Lived User Access Token (`grant_type=fb_exchange_token`).
+  - Queries `GET /me/accounts` with linked `instagram_business_account` fields.
+  - Automatically upserts `facebook` Page Access Token and `instagram` linked account records into Prisma `Account` table.
+- **Dedicated Multi-Platform Publishers:**
+  - `lib/automation/publisher/facebook.ts`: Publishes photo posts directly to Facebook Page feed (`/{page-id}/photos`) with text status fallback (`/{page-id}/feed`).
+  - `lib/automation/publisher/instagram.ts`: Implements Meta's 2-step media container workflow (`POST /{ig-user-id}/media` → status polling → `POST /{ig-user-id}/media_publish`).
+- **Automation Worker Expansion (`lib/automation/worker.ts`):**
+  - Integrated `processFacebookPost` and `processInstagramPost` helpers into the core `processScheduledPosts` scheduling loop alongside LinkedIn.
+- **Connected Accounts Management UI (`app/connected-accounts/page.tsx`):**
+  - Updated Facebook Pages and Instagram cards with active connection links, "Active" status chips, and single-click disconnect actions.
+- **Environment & Configuration:**
+  - Added `META_APP_ID`, `META_APP_SECRET`, and `META_REDIRECT_URI` to `.env.example` and live environment configurations.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 26 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
-   - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
-   - Exchange short-lived token for long-lived page access tokens.
-   - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
-
-2. **[ ] Step 27 — X.com (Twitter API v2) & Tech Socials Integration**
+1. **[ ] Step 27 — X.com (Twitter API v2) & Tech Socials Integration**
    - Implement OAuth 2.0 PKCE for X/Twitter and AT Protocol for Bluesky.
+
+2. **[ ] Step 28 — Multi-Image Carousels & Video Reels Publishing**
+   - Extend Instagram and Facebook publishers to support video media containers and multi-image carousel items.
+
+3. **[ ] Step 29 — GitHub → AI Social Posting & Human Approval Gate (NEW — BUILD NEXT)**
+   - **Core Objective:** When users push or merge meaningful work to a connected GitHub repo, evaluate the change with deterministic rules, use AI to generate a contextual post draft, and route it to a human approval gate before publication.
+   - **Architecture Placement:** Built immediately before the Job Search Agent; reuses and strengthens the existing multi-platform publishing engine (`LinkedIn`, `Facebook`, `Instagram`) and scheduled worker pipeline.
+   - **Key Components:**
+     - **Deterministic Decision Layer:** Branch eligibility (`main`/`master`/`release`), commit relevance filtering (ignores formatting, dependency noise, generated artifacts), change magnitude threshold, cooldown limits, sensitive paths exclusion (`.env`, secrets, private directories), and duplicate protection.
+     - **GitHub Webhook & Ingestion:** `POST /api/integrations/github/webhook` with HMAC-SHA256 signature verification and normalized event persistence.
+     - **AI Generation Contract:** Structured Zod output `{ decision, confidence, reason, projectSummary, changeSummary, postingAngle, draftCaption, hashtags, mediaSuggestion, warnings }` generated without leaking sensitive repository source code.
+     - **Human-in-the-Loop State Machine:** `RECEIVED` → `FILTERED_OUT` | `AI_ANALYZING` → `DRAFT_READY` → `WAITING_FOR_APPROVAL` → `REJECTED` | `APPROVED` → `SCHEDULED` | `PUBLISHED`.
+     - **Prisma Schema Extensions:** `GitHubRepository`, `GitHubEvent`, `SocialPostProposal`, and `AIReview` audit fields.
+     - **UI Experience:** GitHub connection tab in Connected Accounts, repository selection, automation settings, and an **AI Review Inbox** with diff context and one-click *Approve & Publish*, *Approve & Schedule*, *Edit*, or *Reject*.
+   - **Implementation Steps:**
+     1. GitHub OAuth connection & repository discovery (`POST /api/integrations/github/connect`, `GET /api/github/repositories`).
+     2. GitHub Webhook endpoint with signature verification & event persistence.
+     3. Deterministic change-significance engine with configurable rules.
+     4. Background processing path for GitHub events.
+     5. AI change analysis with structured Zod output.
+     6. Social draft generation feeding existing Post/Composer schema.
+     7. Human approval inbox & proposal state machine.
+     8. Seamless handoff of approved proposals to existing LinkedIn / Facebook / Instagram publishers.
+     9. Idempotency, retries, audit logs, and failure handling.
+     10. End-to-end testing with live GitHub webhooks and test social accounts.
+
+4. **[ ] Step 30 — Event-Driven AI Job Search & Recruiter Outreach Agent (NEXT MAJOR FEATURE)**
+   - **Core Concept:** An autonomous career assistant that discovers jobs, ranks compatibility, identifies legitimate recruiters, prepares human-approved outreach, sends emails via Gmail API, and classifies inbound responses.
+   - **Phase 1 — Foundation & Profile Extraction:**
+     - Resume PDF upload and structured parsing into typed `CandidateProfile` (skills, frameworks, experience, projects, target roles).
+     - Spreadsheet-like UI for tracking jobs, applications, outreach, and interviews.
+   - **Phase 2 — Job Discovery & Normalization:**
+     - Scheduled discovery window (avoiding expensive continuous crawling).
+     - Job normalization, deduplication, and PostgreSQL persistence.
+   - **Phase 3 — Hybrid AI Matching Engine:**
+     - Deterministic rule checks (skills, experience, location, authorization).
+     - Semantic vector similarity using `pgvector` embeddings.
+     - Multi-tier LLM evaluation producing match percentage, strengths, gaps, and reasoning.
+   - **Phase 4 — Recruiter Research & Human-in-the-Loop Outreach:**
+     - Legitimate public contact research (never invented/hallucinated emails) with confidence scores.
+     - Contextual outreach generation using candidate facts.
+     - Human review & approval gate (`WAIT_FOR_APPROVAL` → `OUTREACH_APPROVED`).
+     - Google OAuth / Gmail API integration for authenticated message sending.
+   - **Phase 5 — Inbound Email Intelligence:**
+     - Webhook / PubSub triggers on incoming recruiter emails (`RECRUITER_EMAIL_RECEIVED`).
+     - LLM classification into *Interview request*, *Follow-up / info*, or *Rejection*.
+     - Automated CRM updates and instant notifications.
+   - **Phase 6 — Agentic Orchestration & Queue Hardening:**
+     - Stateful AI workflow orchestration with **LangGraph** and tool calling.
+     - Distributed job queues with **BullMQ + Redis** (retries, idempotency, rate limiting, dead-letter queues).
+     - Observability and prompt evaluation via **LangSmith**.
+
+
 
 
 

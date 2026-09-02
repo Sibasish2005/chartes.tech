@@ -9,9 +9,9 @@
 **chartes.tech** is an intelligent social media automation and marketing platform engineered for modern brands, creators, agencies, and businesses. It eliminates the repetitive friction of managing and distributing content across fragmented social networks by offering a unified workspace to draft, preview, schedule, and automatically publish multimedia content.
 
 ### 💡 Core Value Proposition
-- **Create Once, Publish Everywhere:** Draft rich content once and distribute it across supported platforms (LinkedIn, with Meta / Instagram & Facebook coming next).
+- **Create Once, Publish Everywhere:** Draft rich content once and distribute it across supported platforms (LinkedIn, Facebook Pages, and Instagram Professional accounts).
 - **Pixel-Perfect Live Previews:** Real-time mobile and desktop previews show exactly how your post will render before it goes live.
-- **Intelligent Scheduled Automation:** Set future publishing dates and let the background automation worker execute time-accurate releases.
+- **Intelligent Scheduled Automation:** Set future publishing dates and let the background automation worker execute time-accurate releases (triggered by zero-hosting external schedulers like `cron-job.org`).
 - **Single-Click Social Authorization:** Connect verified social profiles safely via OAuth 2.0 with zero password sharing.
 - **Enterprise-Grade Trust & Compliance:** Built-in session security, GDPR & CCPA privacy governance, and strict data protection standards.
 - **Immersive Visual Aesthetics:** A modern, high-performance web experience with fluid smooth-scrolling, GSAP micro-animations, and interactive WebGL canvas visuals.
@@ -23,18 +23,21 @@
 ### 1. 🎨 Visual Post Composer & Live Preview
 - Rich caption drafting with character counters and live validation.
 - Direct-to-cloud media uploads powered by **ImageKit** with client-side image compression and preview cards.
-- Multi-platform target selectors to easily choose destination platforms for each post.
+- Multi-platform target selectors to easily choose destination platforms for each post (LinkedIn, Facebook Pages, Instagram).
 - Draft state persistence powered by **Redux Toolkit**.
 
 ### 2. 🤖 Social Media Publishing & Automation Worker
-- **LinkedIn Publishing Engine:** Direct integration with the LinkedIn REST API (`/rest/posts`) using secure OpenID Connect member URNs.
-- **Scheduled Post Worker:** Queries scheduled posts and automatically processes target platforms, tracks per-platform statuses (`PENDING`, `PUBLISHED`, `FAILED`), and updates parent post states.
-- **Idempotent Execution:** Prevents duplicate posts by checking platform publishing states before dispatching requests.
+- **LinkedIn Publishing Engine:** Direct integration with the LinkedIn REST API (`/rest/posts`) using secure OpenID Connect member URNs and 2-step binary image uploading.
+- **Facebook Pages Publishing Engine:** Direct integration with Meta Graph API v21.0 (`/{page-id}/photos` and `/{page-id}/feed`) with permanent Page Access Tokens.
+- **Instagram Professional Publishing Engine:** 2-step asynchronous media container creation (`/{ig-user-id}/media`) and publishing (`/{ig-user-id}/media_publish`).
+- **Zero-Hosting Scheduled Worker:** Cron-driven HTTP trigger (`/api/cron/publish`) secured with Bearer token authentication compatible with free cron services like `cron-job.org`.
+- **Idempotent Execution:** Prevents duplicate posts by tracking per-platform statuses (`PENDING`, `PUBLISHED`, `FAILED`) and updating parent post states.
 
 ### 3. 🔐 Authentication & Social Connections Hub
 - **Custom Session Auth:** Secure cryptographic session tokens stored in `HTTP-Only`, `SameSite: Lax` cookies with automatic expiration purging.
 - **Google Sign-In / OAuth 2.0:** One-click authentication with Google OpenID Connect.
 - **LinkedIn OAuth 2.0 Connection:** State-verified OAuth flow to link LinkedIn accounts for automated publishing.
+- **Meta OAuth 2.0 (Facebook & Instagram):** Unified 3-legged authorization to grant Facebook Page and Instagram Professional publishing permissions.
 - **Connected Accounts Management (`/connected-accounts`):** View connection health, member account IDs, and disconnect/reconnect social profiles on demand.
 
 ### 4. 📊 Marketing Dashboard (`/automation`)
@@ -60,8 +63,8 @@
             ▼                  ▼                  ▼
 ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
 │   Auth Engine    │ │   Media Engine   │ │  Social Worker   │
-│ Session Cookies  │ │ ImageKit Uploads │ │ LinkedIn REST API│
-│  OAuth 2.0 / OIDC│ │ Auth Tokens & CDN│ │ Cron / Automation│
+│ Session Cookies  │ │ ImageKit Uploads │ │ LinkedIn, Meta   │
+│  OAuth 2.0 / OIDC│ │ Auth Tokens & CDN│ │ (FB & IG API)    │
 └───────────┬──────┘ └──────────────────┘ └───────────┬──────┘
             │                                         │
             └──────────────────┬──────────────────────┘
@@ -86,6 +89,7 @@
 | **Data Validation** | [Zod v4](https://zod.dev/) | End-to-end schema validation (client & API) |
 | **Media Hosting** | [ImageKit](https://imagekit.io/) (`@imagekit/next`) | Cloud asset optimization & client upload auth |
 | **Security & Auth** | `bcryptjs`, `crypto`, `next/headers` cookies | Password hashing & cryptographic session tokens |
+| **External Scheduler** | [cron-job.org](https://cron-job.org) | Zero-hosting scheduled HTTP ping trigger (`/api/cron/publish`) |
 
 ---
 
@@ -107,8 +111,9 @@
 │   ├── (dashboard)/        # Automation dashboard & connected accounts
 │   ├── api/
 │   │   ├── auth/           # Signup, Signin, Logout, Google OAuth
+│   │   ├── cron/           # Scheduled publishing worker trigger (/api/cron/publish)
 │   │   ├── posts/          # Post creation & draft management
-│   │   ├── social/         # Social platform OAuth callbacks (LinkedIn)
+│   │   ├── social/         # Social platform OAuth callbacks (LinkedIn, Facebook/Meta)
 │   │   ├── upload-auth/    # ImageKit secure client-upload token generator
 │   │   └── test/           # End-to-end publisher test verification route
 │   ├── layout.tsx          # Root layout with High-DPI icons & fonts
@@ -119,7 +124,7 @@
 │   └── ui/                 # Reusable Base UI and Shadcn components
 ├── lib/
 │   ├── automation/         # Social publisher engines & scheduling worker
-│   │   ├── publisher/      # Direct REST API drivers (LinkedIn)
+│   │   ├── publisher/      # Direct REST API drivers (LinkedIn, Facebook, Instagram)
 │   │   └── worker.ts       # Scheduled automation processing engine
 │   ├── validations/        # Zod validation schemas for forms and API routes
 │   ├── auth.ts             # Session token extraction & user verification
@@ -150,6 +155,12 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 # LinkedIn OAuth 2.0 & Publishing
 LINKEDIN_CLIENT_ID="your-linkedin-client-id"
 LINKEDIN_CLIENT_SECRET="your-linkedin-client-secret"
+LINKEDIN_REDIRECT_URI="http://localhost:3000/api/social/linkedin/callback"
+
+# Meta (Facebook & Instagram) OAuth 2.0 & Publishing
+META_APP_ID="your-meta-app-id"
+META_APP_SECRET="your-meta-app-secret"
+META_REDIRECT_URI="http://localhost:3000/api/social/facebook/callback"
 
 # Cron Secret for /api/cron/publish
 CRON_SECRET="your-secure-random-cron-secret"
@@ -216,9 +227,25 @@ A successful response confirms OAuth token validation and live post creation on 
 - [x] **Step 6 — Connected Accounts Hub** (Social connection dashboard)
 - [x] **Step 7 — Privacy & Legal Hub** (Responsive `/privacy` & `/terms`)
 - [x] **Step 8 — LinkedIn OAuth & REST Publishing Engine** (Live verified)
-- [ ] **Step 9 — Meta Graph API (Facebook Pages & Instagram)**
-- [ ] **Step 10 — Automated Background Cron Triggers & Queue Worker**
+- [x] **Step 9 — Meta Graph API (Facebook Pages & Instagram)** (Photo posts & 2-step media containers)
+- [x] **Step 10 — Automated Background Cron Triggers & Queue Worker** (cron-job.org zero-hosting integration)
 - [ ] **Step 11 — Live Analytics & Dashboard Feed Sync**
+- [ ] **Step 12 — X.com (Twitter v2) & Bluesky AT Protocol**
+- [ ] **Step 13 — GitHub → AI Social Posting Engine (NEW — BUILD NEXT)**
+  - Webhook ingestion with HMAC-SHA256 signature verification
+  - Deterministic relevance & security filter (branch eligibility, magnitude, sensitive path exclusions, cooldown)
+  - Semantic AI change analysis with structured Zod output validation
+  - Human approval inbox (`WAITING_FOR_APPROVAL` state machine)
+  - Seamless handoff to active LinkedIn / Facebook / Instagram multi-platform publishers
+- [ ] **Step 14 — Event-Driven AI Job Search & Recruiter Outreach Agent (NEXT MAJOR FEATURE)**
+  - Resume extraction into typed `CandidateProfile`
+  - Hybrid job matching engine (rules + `pgvector` semantic search + LLM evaluation)
+  - Verified public recruiter contact discovery
+  - Human-in-the-loop personalized email outreach drafts
+  - Gmail API & Google Workspace OAuth integration
+  - Inbound email intelligence & interview/rejection event classification
+  - Event-driven orchestration with **BullMQ / Redis** and **LangGraph / LangChain**
+  - Spreadsheet-like application tracking CRM dashboard
 
 ---
 
