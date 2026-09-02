@@ -42,9 +42,9 @@
 - Recent posts feed with status chips, scheduled timestamps, and detailed publication states.
 - Protected session routing ensuring tenant data isolation.
 
-### 5. 📜 Privacy & Legal Governance Hub (`/privacy`)
-- Comprehensive 16-section interactive privacy document covering GDPR, CCPA/CPRA, and global compliance.
-- Interactive table of contents, full-text live section search, and PDF print engine.
+### 5. 📜 Privacy & Legal Governance Hub (`/privacy` & `/terms`)
+- Clean, minimalist, and responsive legal documentation for Privacy Policy and Terms of Service.
+- Early-stage SaaS legal protections: clear data disclosures, user content ownership, third-party platform & AI disclaimers, no-guarantee-of-results clauses, and synchronized PDF print engine.
 
 ---
 
@@ -214,7 +214,7 @@ A successful response confirms OAuth token validation and live post creation on 
 - [x] **Step 4 — Social Auth & Media Engine** (Google OAuth + ImageKit)
 - [x] **Step 5 — Post Composer & Redux State** (Live preview + multi-platform targeting)
 - [x] **Step 6 — Connected Accounts Hub** (Social connection dashboard)
-- [x] **Step 7 — Privacy & Legal Hub** (GDPR/CCPA compliant `/privacy`)
+- [x] **Step 7 — Privacy & Legal Hub** (Responsive `/privacy` & `/terms`)
 - [x] **Step 8 — LinkedIn OAuth & REST Publishing Engine** (Live verified)
 - [ ] **Step 9 — Meta Graph API (Facebook Pages & Instagram)**
 - [ ] **Step 10 — Automated Background Cron Triggers & Queue Worker**

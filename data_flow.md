@@ -25,7 +25,7 @@
    - 6.10 [LinkedIn Publisher: 2-Step Binary Upload & Commentary Publishing](#610-linkedin-publisher-2-step-binary-upload--commentary-publishing)
    - 6.11 [Post Deletion Flow with Optimistic UI Update](#611-post-deletion-flow-with-optimistic-ui-update)
    - 6.12 [User Logout Flow](#612-user-logout-flow)
-   - 6.13 [Consultation / Discovery Booking Flow](#613-consultation--discovery-booking-flow)
+   - 6.13 [Route Redirection Flow (/booking → /automation)](#613-route-redirection-flow-booking--automation)
 7. [Security, Session, and Error-Handling Architecture](#7-security-session-and-error-handling-architecture)
 8. [Cross-Cutting Concerns & Production Observability](#8-cross-cutting-concerns--production-observability)
 
@@ -43,7 +43,8 @@ flowchart TD
         UI_Dash["Dashboard (/automation)"]
         UI_Composer["Composer & Previews (/create-post)"]
         UI_Accounts["Account Integrations (/connected-accounts)"]
-        UI_Booking["Discovery Booking (/booking)"]
+        UI_Legal["Legal Hub (/privacy, /terms)"]
+        UI_Redirect["Route Fallback & Redirects (/booking -> /automation)"]
         
         ReduxStore["Redux Toolkit Store (postDraft, composerUi)"]
         CustomHooks["Custom React Hooks (useCreatePost, useSocialAccounts, etc.)"]
@@ -227,9 +228,9 @@ classDiagram
 app/
 ├── (landing-page)
 │   ├── page.tsx                           # Landing Page with SSR auth check
-│   ├── booking/page.tsx                   # Consultation Booking with Interactive Scheduler
-│   ├── privacy/page.tsx                   # Privacy Policy Page
-│   ├── terms/page.tsx                     # Terms of Service Page
+│   ├── booking/page.tsx                   # Server-side redirect fallback to /automation
+│   ├── privacy/page.tsx                   # Privacy Policy Page (Minimalist Responsive Layout)
+│   ├── terms/page.tsx                     # Terms of Service Page (Minimalist Responsive Layout)
 ├── login/page.tsx                         # User Login Page
 ├── signup/page.tsx                        # User Registration Page
 ├── automation/page.tsx                    # Protected Dashboard (Stats, Post History)
@@ -718,23 +719,25 @@ sequenceDiagram
 
 ---
 
-### 6.13 Consultation / Discovery Booking Flow
+### 6.13 Route Redirection Flow (/booking → /automation)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User as Visitor / Client
+    participant Router as Next.js Router (next.config.ts / Middleware)
     participant BookingPage as app/booking/page.tsx
-    participant Layout as components/layout/AppLayout.tsx
+    participant Dash as app/automation/page.tsx
 
-    User->>BookingPage: Navigates to /booking
-    BookingPage->>Layout: Renders sidebar and responsive discovery interface
-    User->>BookingPage: Selects Consultation Type (e.g. 30-Min Growth Strategy)
-    User->>BookingPage: Selects Preferred Date & Time Slot (e.g. 02:00 PM)
-    User->>BookingPage: Enters Contact details (Full Name, Work Email, Company URL, Notes)
-    User->>BookingPage: Clicks "Confirm 30 mins Strategy Call"
-    BookingPage->>BookingPage: Validates required fields, triggers submitting animation
-    BookingPage->>User: Displays confirmation screen with scheduled details & invitation notice
+    alt Config-Level Permanent Redirect (HTTP 308)
+        User->>Router: GET /booking
+        Router-->>User: 308 Permanent Redirect (Location: /automation)
+        User->>Dash: Navigates to /automation
+    else Component-Level Server Redirect Fallback
+        User->>BookingPage: Direct invocation of BookingPage()
+        BookingPage->>BookingPage: Calls redirect("/automation")
+        BookingPage-->>User: Immediate redirect to /automation
+    end
 ```
 
 ---

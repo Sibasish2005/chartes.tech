@@ -34,7 +34,7 @@ export default function Footer() {
           </p>
         </div>
         <Link
-          href="/booking"
+          href="/automation"
           className={`${poppins.className} relative z-10 mt-4 px-8 py-4 bg-[#A67C3D] hover:bg-[#8f6b34] text-white text-base md:text-lg rounded-full font-semibold transition-all shadow-[0_4px_20px_rgba(166,124,61,0.3)] hover:shadow-[0_6px_25px_rgba(166,124,61,0.45)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2.5`}
         >
           <span>Let's Get Started</span>

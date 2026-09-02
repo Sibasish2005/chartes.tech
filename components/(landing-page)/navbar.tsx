@@ -89,12 +89,6 @@ export default function Navbar({ isLoggedIn = false }: NavbarProps) {
           >
             {isLoggedIn ? "Dashboard" : "Get Started"}
           </Link>
-          <Link 
-            href="/booking" 
-            className="px-5 py-2 lg:px-7 lg:py-3 border border-neutral-300 text-neutral-800 text-xs lg:text-sm font-semibold rounded-full hover:bg-neutral-50 transition-all"
-          >
-            Book a Call
-          </Link>
         </div>
 
         {/* Mobile Hamburger Menu Button */}
@@ -185,11 +179,11 @@ export default function Navbar({ isLoggedIn = false }: NavbarProps) {
                   {isLoggedIn ? "Dashboard" : "Get Started"}
                 </Link>
                 <Link 
-                  href="/booking" 
+                  href="/automation" 
                   onClick={toggleMenu}
                   className="w-full text-center py-3 border border-neutral-300 text-neutral-800 font-semibold rounded-full hover:bg-neutral-50 transition-all"
                 >
-                  Book a Call
+                  Automation
                 </Link>
               </motion.div>
             </div>

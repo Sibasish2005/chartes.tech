@@ -1,91 +1,61 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { Poppins, Roboto_Slab } from "next/font/google";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/(landing-page)/footer";
 import {
-  FileText,
-  ShieldCheck,
-  UserCheck,
-  Share2,
-  Cpu,
-  Copyright,
-  AlertTriangle,
-  CreditCard,
-  Clock,
-  Scale,
-  ShieldAlert,
-  Ban,
-  Globe,
-  RefreshCw,
-  Mail,
-  Printer,
   ArrowLeft,
+  Printer,
   ChevronRight,
-  Search,
+  ArrowUp,
   ExternalLink,
-  CheckCircle2,
+  FileText,
+  Mail,
+  AlertCircle
 } from "lucide-react";
-
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-});
-
-const robotoSlab = Roboto_Slab({
-  weight: ["400", "600", "700"],
-  subsets: ["latin"],
-});
 
 interface SectionItem {
   id: string;
   number: string;
   title: string;
-  icon: any;
 }
 
 const SECTIONS: SectionItem[] = [
-  { id: "acceptance", number: "1", title: "Acceptance of Terms & Eligibility", icon: CheckCircle2 },
-  { id: "services-description", number: "2", title: "Service Description & SaaS Scope", icon: FileText },
-  { id: "user-accounts", number: "3", title: "User Accounts & Authentication", icon: UserCheck },
-  { id: "platform-integrations", number: "4", title: "Third-Party Social APIs & OAuth", icon: Share2 },
-  { id: "ai-content-generation", number: "5", title: "AI Automation & Generated Content", icon: Cpu },
-  { id: "intellectual-property", number: "6", title: "Intellectual Property & Content Ownership", icon: Copyright },
-  { id: "acceptable-use", number: "7", title: "Acceptable Use & Prohibited Conduct", icon: AlertTriangle },
-  { id: "billing-subscriptions", number: "8", title: "Subscription Plans, Billing & Refunds", icon: CreditCard },
-  { id: "service-availability", number: "9", title: "Service Availability & SLA", icon: Clock },
-  { id: "liability-disclaimers", number: "10", title: "Disclaimers & Limitation of Liability", icon: Scale },
-  { id: "indemnification", number: "11", title: "Indemnification", icon: ShieldAlert },
-  { id: "suspension-termination", number: "12", title: "Suspension & Termination", icon: Ban },
-  { id: "governing-law", number: "13", title: "Governing Law & Dispute Resolution", icon: Globe },
-  { id: "terms-modifications", number: "14", title: "Modifications to Terms", icon: RefreshCw },
-  { id: "legal-contact", number: "15", title: "Legal Inquiries & Notices", icon: Mail },
+  { id: "acceptance", number: "1", title: "Acceptance of Terms" },
+  { id: "authority", number: "2", title: "User Authority" },
+  { id: "services", number: "3", title: "Description of Services" },
+  { id: "accounts", number: "4", title: "Accounts & Security" },
+  { id: "user-content", number: "5", title: "User Content & License" },
+  { id: "user-responsibility", number: "6", title: "User Responsibilities" },
+  { id: "third-party-platforms", number: "7", title: "Third-Party Platforms & APIs" },
+  { id: "ai-features", number: "8", title: "AI Features & Review Notice" },
+  { id: "no-guarantee-results", number: "9", title: "No Guarantee of Results" },
+  { id: "prohibited-use", number: "10", title: "Prohibited Conduct" },
+  { id: "billing", number: "11", title: "Fees, Billing & Cancellation" },
+  { id: "warranties", number: "12", title: "Disclaimer of Warranties" },
+  { id: "liability", number: "13", title: "Limitation of Liability" },
+  { id: "indemnity", number: "14", title: "Indemnification" },
+  { id: "termination", number: "15", title: "Suspension & Termination" },
+  { id: "force-majeure", number: "16", title: "Events Outside Control" },
+  { id: "governing-law", number: "17", title: "Applicable Law & Disputes" },
+  { id: "updates-contact", number: "18", title: "Changes & Contact" },
 ];
 
 export default function TermsContent() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("acceptance");
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 400) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
-      }
+      setShowBackToTop(window.scrollY > 400);
 
-      const scrollPosition = window.scrollY + 200;
-      for (const section of SECTIONS) {
+      const scrollPosition = window.scrollY + 180;
+      for (let i = SECTIONS.length - 1; i >= 0; i--) {
+        const section = SECTIONS[i];
         const el = document.getElementById(section.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section.id);
-            break;
-          }
+        if (el && scrollPosition >= el.offsetTop) {
+          setActiveSection(section.id);
+          break;
         }
       }
     };
@@ -97,7 +67,7 @@ export default function TermsContent() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const yOffset = -100;
+      const yOffset = -90;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
@@ -107,483 +77,482 @@ export default function TermsContent() {
     window.print();
   };
 
-  const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return SECTIONS;
-    const query = searchQuery.toLowerCase();
-    return SECTIONS.filter(
-      (s) =>
-        s.title.toLowerCase().includes(query) ||
-        s.number.includes(query)
-    );
-  }, [searchQuery]);
-
   return (
-    <div className={`min-h-screen bg-[#FDFBF7] text-[#1A1A1A] ${poppins.className}`}>
-      {/* Top Sticky Header */}
-      <header className="sticky top-0 z-40 bg-[#0D0D0D]/95 backdrop-blur-md border-b border-neutral-800 text-[#F3EBDD] transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <img
-                src="/logo.png"
-                alt="chartes.tech Logo"
-                className="h-8 sm:h-10 w-auto object-contain brightness-0 invert transition-transform group-hover:scale-105"
-              />
+    <div className="min-h-screen bg-white text-neutral-800 antialiased selection:bg-neutral-200">
+      {/* Minimal Header */}
+      <header className="sticky top-0 z-30 border-b border-neutral-200/80 bg-white/90 backdrop-blur-md print:hidden">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-xs font-medium text-neutral-600 transition hover:text-neutral-900"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>chartes.tech</span>
             </Link>
-            <div className="hidden sm:block h-6 w-px bg-neutral-800" />
-            <div className="hidden sm:flex items-center gap-2 text-xs text-[#F3EBDD]/60 font-medium">
-              <span className="text-[#A67C3D]">Legal Center</span>
-              <span>/</span>
-              <span className="text-[#F3EBDD]">Terms of Service</span>
-            </div>
+            <span className="text-neutral-300">/</span>
+            <span className="text-xs font-medium text-neutral-900">Terms of Service</span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/privacy"
-              className="hidden lg:inline-block text-xs font-medium text-[#F3EBDD]/70 hover:text-white transition-colors"
+              className="text-xs font-medium text-neutral-500 transition hover:text-neutral-900 hidden sm:inline"
             >
               Privacy Policy
             </Link>
             <button
               onClick={handlePrint}
-              className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-neutral-700 hover:border-neutral-500 text-xs font-medium text-[#F3EBDD]/80 hover:text-white transition-all"
-              title="Print or Save as PDF"
+              className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 px-2.5 py-1 text-xs font-medium text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-900"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print Terms</span>
+              <Printer className="h-3.5 w-3.5" />
+              <span>Print</span>
             </button>
-            <Link
-              href="/"
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-800/80 hover:bg-neutral-700 text-xs sm:text-sm font-medium text-[#F3EBDD] transition-all"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Return Home</span>
-            </Link>
-            <Link
-              href="/login"
-              className="px-4 py-2 rounded-full bg-[#A67C3D] hover:bg-[#8f6b34] text-white text-xs sm:text-sm font-semibold transition-all shadow-[0_2px_10px_rgba(166,124,61,0.3)]"
-            >
-              Client Portal
-            </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero / Header Section */}
-      <section className="relative bg-[#0D0D0D] text-[#F3EBDD] py-16 sm:py-24 border-b border-neutral-800 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(166,124,61,0.15)_0%,transparent_60%)] pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl space-y-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A67C3D]/20 border border-[#A67C3D]/40 text-[#D8B480] text-xs font-medium tracking-wide uppercase">
-              <FileText className="w-3.5 h-3.5" />
-              <span>Master Services Agreement</span>
+      {/* Main Container */}
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-16">
+        
+        {/* Document Title Header */}
+        <div className="mb-12 border-b border-neutral-200 pb-8">
+          <div className="mb-3 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-[#A67C3D]">
+            <FileText className="h-4 w-4" />
+            <span>User Agreement</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900">
+            Terms of Service
+          </h1>
+          <p className="mt-4 max-w-3xl text-base text-neutral-600 leading-relaxed">
+            These Terms of Service (&quot;Terms&quot;) govern your access to and use of the website, applications, APIs, user dashboards, automated scheduling tools, and related software provided through chartes.tech (collectively, the &quot;Services&quot;). In these Terms, &quot;chartes.tech&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot; refers to chartes.tech and the operator of the Services.
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-neutral-500">
+            <div>
+              <span className="font-semibold text-neutral-700">Effective Date:</span> August 24, 2026
             </div>
-            <h1 className={`${robotoSlab.className} text-3xl sm:text-5xl font-bold tracking-tight text-[#F3EBDD] leading-tight`}>
-              Terms and Conditions of Service
-            </h1>
-            <p className="text-sm sm:text-base text-[#F3EBDD]/70 leading-relaxed">
-              These Terms of Service govern your access to and use of chartes.tech platform, automated publishing infrastructure, artificial intelligence tools, and developer integrations.
-            </p>
-            <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#F3EBDD]/50 border-t border-neutral-800/80">
-              <div>Effective Date: <strong className="text-[#F3EBDD]/80">August 26, 2026</strong></div>
-              <div>•</div>
-              <div>Version: <strong className="text-[#F3EBDD]/80">2.4.0 (Enterprise)</strong></div>
-              <div>•</div>
-              <Link href="/privacy" className="text-[#A67C3D] hover:underline flex items-center gap-1">
-                <span>View Privacy Policy</span>
-                <ChevronRight className="w-3 h-3" />
-              </Link>
+            <div className="hidden sm:inline text-neutral-300">•</div>
+            <div>
+              <span className="font-semibold text-neutral-700">Last Updated:</span> August 2026
+            </div>
+            <div className="hidden sm:inline text-neutral-300">•</div>
+            <div>
+              <span className="font-semibold text-neutral-700">Version:</span> 2.7.0
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Main Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* Sidebar / TOC */}
-          <aside className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 lg:self-start space-y-6">
-            {/* Search filter */}
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
-              <input
-                type="text"
-                placeholder="Search terms..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-white border border-[#EAE3D9] focus:outline-none focus:ring-1 focus:ring-[#A67C3D] text-neutral-900 shadow-xs"
-              />
-            </div>
-
-            {/* Table of Contents */}
-            <div className="bg-white rounded-2xl border border-[#EAE3D9] p-4 shadow-xs">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 px-3 pb-3 border-b border-[#EAE3D9]/60">
-                Table of Contents
-              </h3>
-              <nav className="mt-3 space-y-1 max-h-[60vh] overflow-y-auto pr-1">
-                {filteredSections.map((section) => {
-                  const Icon = section.icon;
-                  const isActive = activeSection === section.id;
+        {/* Content Layout: Sticky Nav Sidebar + Prose Column */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* Table of Contents - Desktop Sticky Sidebar */}
+          <aside className="lg:col-span-4 sticky top-20 hidden lg:block print:hidden">
+            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/50 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3 px-2">
+                On This Page
+              </div>
+              <nav className="space-y-0.5 max-h-[calc(100vh-140px)] overflow-y-auto pr-1 text-xs">
+                {SECTIONS.map((sec) => {
+                  const isActive = activeSection === sec.id;
                   return (
                     <button
-                      key={section.id}
-                      onClick={() => scrollToSection(section.id)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center gap-2.5 transition-all ${
+                      key={sec.id}
+                      onClick={() => scrollToSection(sec.id)}
+                      className={`w-full text-left px-2.5 py-1.5 rounded-md flex items-center justify-between transition-colors ${
                         isActive
-                          ? "bg-[#18181B] text-white font-semibold shadow-xs"
-                          : "text-neutral-600 hover:bg-[#FAF8F5] hover:text-neutral-900"
+                          ? "bg-white text-[#A67C3D] font-medium shadow-xs border border-neutral-200/60"
+                          : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100/60"
                       }`}
                     >
-                      <span className={`w-5 text-[11px] font-mono shrink-0 ${isActive ? "text-[#D8B480]" : "text-neutral-400"}`}>
-                        {section.number}.
+                      <span className="truncate">
+                        <span className="text-neutral-400 mr-1.5">{sec.number}.</span>
+                        {sec.title}
                       </span>
-                      <span className="truncate">{section.title}</span>
+                      {isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#A67C3D]" />}
                     </button>
                   );
                 })}
               </nav>
-            </div>
 
-            {/* Quick Summary Card */}
-            <div className="bg-[#FAF8F5] border border-[#EAE3D9] rounded-2xl p-5 space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-neutral-900">
-                <ShieldCheck className="w-4 h-4 text-[#A67C3D]" />
-                <span>Summary & Assurance</span>
+              <div className="mt-4 pt-4 border-t border-neutral-200/80 px-2 space-y-2">
+                <Link
+                  href="/privacy"
+                  className="flex items-center justify-between text-xs text-neutral-600 hover:text-neutral-900 transition"
+                >
+                  <span>View Privacy Policy</span>
+                  <ExternalLink className="h-3 w-3 text-neutral-400" />
+                </Link>
+                <a
+                  href="mailto:legal@chartes.tech"
+                  className="flex items-center justify-between text-xs text-neutral-600 hover:text-neutral-900 transition"
+                >
+                  <span>Contact Inquiries</span>
+                  <Mail className="h-3 w-3 text-neutral-400" />
+                </a>
               </div>
-              <p className="text-xs text-neutral-600 leading-relaxed">
-                You retain full ownership of your content and brand assets. chartes.tech publishes strictly on your behalf via official OAuth APIs with end-to-end credential encryption.
-              </p>
             </div>
           </aside>
 
-          {/* Legal Content */}
-          <main className="lg:col-span-8 xl:col-span-9 space-y-12 bg-white rounded-3xl border border-[#EAE3D9] p-6 sm:p-10 lg:p-12 shadow-xs">
-            {/* Section 1 */}
-            <section id="acceptance" className="space-y-4 pt-2">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  1
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Acceptance of Terms & Eligibility
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  By creating an account, accessing, or utilizing the <strong>chartes.tech</strong> platform, application programming interfaces (APIs), social automation scheduler, or related services (collectively, the &ldquo;Services&rdquo;), you confirm that you have read, understood, and agreed to be legally bound by these Terms of Service (&ldquo;Agreement&rdquo;) and our Privacy Policy.
-                </p>
-                <p>
-                  If you are entering into this Agreement on behalf of a company, organization, agency, or other legal entity, you represent and warrant that you possess full corporate authority to bind that entity to these Terms. If you do not have such authority or do not agree with any part of these Terms, you must not use or access the Services.
-                </p>
-              </div>
-            </section>
+          {/* Document Content Column */}
+          <main className="lg:col-span-8 space-y-12 text-sm sm:text-base leading-relaxed text-neutral-700">
 
-            <hr className="border-[#EAE3D9]/60" />
+            {/* Mobile Jump Selector */}
+            <div className="lg:hidden print:hidden rounded-lg border border-neutral-200 bg-neutral-50/80 p-3">
+              <label htmlFor="mobile-jump" className="block text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-1.5">
+                Jump to Section
+              </label>
+              <div className="relative">
+                <select
+                  id="mobile-jump"
+                  value={activeSection}
+                  onChange={(e) => scrollToSection(e.target.value)}
+                  className="w-full appearance-none rounded-md border border-neutral-300 bg-white px-3 py-2 text-xs font-medium text-neutral-800 shadow-2xs focus:border-[#A67C3D] focus:outline-none focus:ring-1 focus:ring-[#A67C3D]"
+                >
+                  {SECTIONS.map((sec) => (
+                    <option key={sec.id} value={sec.id}>
+                      {sec.number}. {sec.title}
+                    </option>
+                  ))}
+                </select>
+                <ChevronRight className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 rotate-90 text-neutral-400" />
+              </div>
+            </div>
+
+            {/* Section 1 */}
+            <section id="acceptance" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                1. Acceptance of Terms & Eligibility
+              </h2>
+              <p>
+                By creating an account, accessing, or using the Services, you agree to these Terms and our <Link href="/privacy" className="text-[#A67C3D] underline underline-offset-2">Privacy Policy</Link>. If you do not agree to these Terms, you must not access or use the Services.
+              </p>
+              <p>
+                <strong>Eligibility:</strong> The Services are intended solely for adults who are at least 18 years of age (or the legal age of majority in your jurisdiction). By accessing the Services or registering an account, you represent and warrant that you meet this age requirement.
+              </p>
+              <p className="text-xs sm:text-sm text-neutral-500">
+                Where the account registration flow presents an affirmative agreement option (such as a confirmation checkbox), checking that box constitutes your express agreement to these Terms and the Privacy Policy.
+              </p>
+            </section>
 
             {/* Section 2 */}
-            <section id="services-description" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  2
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Service Description & SaaS Scope
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  chartes.tech provides an automated social media orchestrator and management platform enabling users to create, schedule, optimize, generate AI-assisted multimedia content, and dispatch social media publications to supported third-party platforms (including LinkedIn, Meta Instagram, and Facebook).
-                </p>
-                <p>
-                  We continuously improve and expand our offerings. chartes.tech reserves the right to modify, refine, update, or temporarily suspend aspects of the Services to introduce new features, improve security, or maintain infrastructure integrity.
-                </p>
-              </div>
+            <section id="authority" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                2. User Authority & Organization Use
+              </h2>
+              <p>
+                If you use the Services on behalf of a business, organization, agency, or other entity, you represent and warrant that you have authority to accept these Terms on its behalf.
+              </p>
+              <p>
+                In that case, &quot;you&quot; and &quot;your&quot; refers to that entity, and that entity agrees to be responsible for compliance with these Terms by all authorized users, employees, or collaborators accessing the Services through its account.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 3 */}
-            <section id="user-accounts" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  3
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  User Accounts & Authentication
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  To use the Services, you must register for an account by providing accurate, complete, and updated information. You are solely responsible for maintaining the confidentiality of your account credentials, passwords, and sessions.
-                </p>
-                <p>
-                  You agree to immediately notify chartes.tech at <strong>support@chartes.tech</strong> of any unauthorized use or security breach of your account. chartes.tech shall not be liable for any losses or damages resulting from unauthorized account access.
-                </p>
-              </div>
+            <section id="services" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                3. Description of Services & Modifications
+              </h2>
+              <p>
+                chartes.tech provides web-based software tools for content creation, scheduling, publishing automation, performance metrics tracking, and AI-assisted drafting across supported third-party social media platforms.
+              </p>
+              <p>
+                We may modify, suspend, restrict, or discontinue features or portions of the Services at any time, including where necessary for security, maintenance, legal compliance, or changes in third-party services. We do not promise that every feature or functionality currently offered will remain permanently available.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 4 */}
-            <section id="platform-integrations" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  4
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Third-Party Social APIs & OAuth Compliance
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  chartes.tech interacts with external developer APIs provided by social networks (e.g. LinkedIn API, Meta Graph API, Google OAuth). By connecting accounts, you authorize chartes.tech to access and publish content on your behalf in strict accordance with the permissions granted.
-                </p>
-                <p>
-                  You agree to comply with the relevant developer terms of each connected provider:
-                </p>
-                <ul className="list-disc pl-5 space-y-1.5 text-xs text-neutral-600">
-                  <li>LinkedIn Developer Terms of Use and API Policies.</li>
-                  <li>Meta Platform Terms and Community Guidelines.</li>
-                  <li>Google API Services User Data Policy, including Limited Use requirements.</li>
-                </ul>
-              </div>
+            <section id="accounts" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                4. User Accounts & Account Security
+              </h2>
+              <p>
+                To use most features of the Services, you must register for an account by providing accurate, current, and complete registration information. You agree to maintain the confidentiality of your account credentials, login credentials, and session tokens.
+              </p>
+              <p>
+                You are responsible for all activities that occur under your account. You agree to notify chartes.tech immediately at <a href="mailto:support@chartes.tech" className="text-[#A67C3D] underline">support@chartes.tech</a> if you discover or suspect any unauthorized access to or security breach of your account.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 5 */}
-            <section id="ai-content-generation" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  5
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  AI Automation & Generated Content
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  Our platform offers artificial intelligence capabilities for caption synthesis, hashtag generation, and scheduling recommendations. While our AI models strive for accuracy and creativity, you acknowledge that AI-generated output should be reviewed prior to publication.
-                </p>
-                <p>
-                  You are solely responsible for ensuring that all published content complies with applicable advertising laws, intellectual property rights, and platform community standards.
-                </p>
-              </div>
+            <section id="user-content" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                5. User Content & Limited License
+              </h2>
+              <p>
+                <strong>Ownership:</strong> As between you and chartes.tech, you retain full ownership and all intellectual property rights in and to the text, images, video reels, audio files, graphics, and brand assets that you upload, compose, or submit through the Services (&quot;User Content&quot;). chartes.tech does not claim ownership of your User Content.
+              </p>
+              <p>
+                <strong>Limited License to Operate the Services:</strong> You grant chartes.tech a non-exclusive, worldwide, royalty-free license to host, store, reproduce, process, transmit, and display your User Content only as reasonably necessary to operate, maintain, secure, and provide the Services on your behalf.
+              </p>
+              <p className="text-xs sm:text-sm text-neutral-600">
+                This license does not grant chartes.tech the right to sell your content or use it for independent commercial advertising without your separate, explicit permission.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 6 */}
-            <section id="intellectual-property" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  6
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Intellectual Property & Content Ownership
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  <strong>Your Content:</strong> You retain 100% ownership and intellectual property rights in and to any text, images, media assets, and branding uploaded to chartes.tech. You grant us a worldwide, non-exclusive license solely to process, host, transform, and transmit your content for the purpose of executing the Services.
-                </p>
-                <p>
-                  <strong>Our Platform:</strong> All software, designs, algorithms, user interfaces, branding, and proprietary systems of chartes.tech remain the exclusive intellectual property of chartes.tech and its licensors.
-                </p>
-              </div>
+            <section id="user-responsibility" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                6. User Responsibilities & Content Publishing
+              </h2>
+              <p>
+                You are responsible for the content, information, media, and materials that you submit to or publish through the Services and for ensuring that you have all rights, permissions, consents, and authorizations necessary to use and publish them.
+              </p>
+              <p>
+                You are responsible for ensuring that your use of the Services and published content complies with applicable law and the rules and policies of the third-party platforms you connect.
+              </p>
+              <p>
+                <strong>Reviewing Scheduled Content:</strong> You are responsible for reviewing scheduled content before publication and for ensuring that content is appropriate, lawful, and authorized. Chartes does not guarantee that content will be published at a particular time where publication depends on third-party platforms, APIs, network availability, or other factors outside our reasonable control.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 7 */}
-            <section id="acceptable-use" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  7
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Acceptable Use & Prohibited Conduct
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>You agree not to use the Services to:</p>
-                <ul className="list-disc pl-5 space-y-1.5 text-xs text-neutral-600">
-                  <li>Distribute spam, deceptive marketing, malware, or phishing campaigns.</li>
-                  <li>Infringe upon intellectual property, trademark, or privacy rights of any third party.</li>
-                  <li>Circumvent API rate limits, security tokens, or platform access controls.</li>
-                  <li>Engage in reverse engineering, scraping, or automated abuse of the chartes.tech backend.</li>
-                </ul>
-              </div>
+            <section id="third-party-platforms" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                7. Third-Party Platforms & APIs
+              </h2>
+              <p>
+                Our Services allow you to connect authorized social media accounts through official developer APIs (such as Meta Graph APIs for Instagram and Facebook, Google API Services and YouTube APIs, and LinkedIn Developer APIs).
+              </p>
+              <p>
+                <strong>Independent Platforms:</strong> Third-party platforms are independent services. Their availability, policies, algorithms, APIs, account restrictions, content moderation, and decisions are outside our control.
+              </p>
+              <p>
+                chartes.tech does not guarantee:
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-neutral-600">
+                <li>Continued, uninterrupted API access to any external platform;</li>
+                <li>Account verification or approval by third-party platforms;</li>
+                <li>Post reach, follower growth, engagement rates, or algorithm performance;</li>
+                <li>Platform uptime or continuous third-party availability;</li>
+                <li>The absence of third-party account suspensions or content removals.</li>
+              </ul>
+              <p className="text-xs sm:text-sm text-neutral-600">
+                You agree to comply with all applicable third-party platform terms and developer policies (including the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" className="text-[#A67C3D] underline">Google API Services User Data Policy</a>, including Limited Use requirements, Meta Platform Terms, and LinkedIn Developer Terms). You may disconnect your social accounts at any time via your dashboard settings.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 8 */}
-            <section id="billing-subscriptions" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  8
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Subscription Plans, Billing & Refunds
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
+            <section id="ai-features" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                8. AI Features & Review Notice
+              </h2>
+              <p>
+                chartes.tech offers artificial intelligence features to assist you with generating post captions, suggesting hashtags, and drafting content concepts.
+              </p>
+              <div className="rounded-lg border-l-4 border-amber-500 bg-amber-50/50 p-4 text-xs sm:text-sm text-amber-900 space-y-1.5">
+                <div className="font-semibold flex items-center gap-1.5 text-amber-950">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <span>Important Notice on AI Output & User Verification</span>
+                </div>
                 <p>
-                  Certain tiers of the Services require paid subscriptions. Subscription fees are billed in advance on a recurring monthly or annual cycle. You may cancel your subscription at any time via your account settings; cancellation takes effect at the end of the current billing period.
+                  AI outputs are generated algorithmically and may be inaccurate, incomplete, inappropriate, or unintended. You must review output before relying on or publishing it, and you are solely responsible for deciding whether to publish AI-generated material.
                 </p>
                 <p>
-                  Unless required by law, all payments are non-refundable once processed. Custom enterprise agreements supersede standard tier pricing terms.
+                  chartes.tech does not guarantee that AI-generated outputs are accurate, original, legally compliant, free of copyright infringement, commercially successful, or approved by any platform.
                 </p>
               </div>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 9 */}
-            <section id="service-availability" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  9
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Service Availability & SLA
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  chartes.tech targets a 99.9% uptime for core publishing dispatchers and webhook queues. Scheduled maintenance windows will be announced in advance through dashboard alerts whenever possible.
-                </p>
-              </div>
+            <section id="no-guarantee-results" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                9. No Guarantee of Marketing Results
+              </h2>
+              <p>
+                chartes.tech provides content automation and scheduling software tools. Because social media outcomes depend on numerous external variables outside our control (including user content quality, audience behavior, and platform algorithms), chartes.tech does not warrant or guarantee:
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-neutral-600">
+                <li>Follower growth, audience expansion, or account reach;</li>
+                <li>Impressions, likes, comments, shares, or engagement metrics;</li>
+                <li>Sales revenue, business leads, customer conversions, or virality;</li>
+                <li>Advertising efficiency or commercial return on investment;</li>
+                <li>Platform approval, account verification, or specific business results.</li>
+              </ul>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 10 */}
-            <section id="liability-disclaimers" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  10
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Disclaimers & Limitation of Liability
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  THE SERVICES ARE PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; WITHOUT WARRANTIES OF ANY KIND. TO THE MAXIMUM EXTENT PERMITTED BY LAW, CHARTES.TECH DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-                </p>
-                <p>
-                  IN NO EVENT SHALL CHARTES.TECH OR ITS AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE OF THE SERVICES.
-                </p>
-              </div>
+            <section id="prohibited-use" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                10. Prohibited Activities & Acceptable Use
+              </h2>
+              <p>You agree not to use the Services to:</p>
+              <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-neutral-600">
+                <li>Engage in or promote unlawful, fraudulent, deceptive, or defamatory activity;</li>
+                <li>Distribute unsolicited communications, bulk spam, or misleading marketing schemes;</li>
+                <li>Infringe, misappropriate, or violate any third-party intellectual property, privacy, publicity, or contractual rights;</li>
+                <li>Bypass, circumvent, or disable API rate limits, authentication tokens, or security controls;</li>
+                <li>Interfere with, disrupt, or place an unreasonable technical burden on the Services or connected infrastructure;</li>
+                <li>Reverse engineer, decompile, disassemble, or extract underlying source code from our software;</li>
+                <li>Access or scrape the Services through automated bots or scripts without express authorization;</li>
+                <li>Violate the policies, community standards, or developer terms of any connected third-party social media platform.</li>
+              </ul>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 11 */}
-            <section id="indemnification" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  11
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Indemnification
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  You agree to defend, indemnify, and hold harmless chartes.tech, its directors, employees, and agents from and against any claims, liabilities, damages, losses, and expenses arising out of your content or violation of these Terms.
-                </p>
-              </div>
+            <section id="billing" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                11. Fees, Billing & Cancellation
+              </h2>
+              <p>
+                Certain features of chartes.tech require a paid subscription. Subscription fees are billed in advance on a recurring monthly or annual basis as specified at the time of purchase.
+              </p>
+              <p>
+                <strong>Cancellation:</strong> You may cancel your subscription at any time through your account settings. Upon cancellation, your subscription will remain active until the end of the current paid billing cycle, and you will not be billed for subsequent cycles.
+              </p>
+              <p>
+                <strong>Refund Policy:</strong> Except where required by applicable law or expressly stated at the time of purchase, fees are non-refundable once charged.
+              </p>
+              <p className="text-xs sm:text-sm text-neutral-600">
+                <strong>Third-Party Payment Processors:</strong> Payment processing is handled by external third-party payment providers (such as Stripe). You agree to provide valid payment details and authorize recurring charges. chartes.tech does not store raw payment card numbers on its servers.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 12 */}
-            <section id="suspension-termination" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  12
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Suspension & Termination
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  You may terminate your account at any time. chartes.tech reserves the right to suspend or terminate accounts that breach these Terms or engage in fraudulent or harmful conduct.
-                </p>
-              </div>
+            <section id="warranties" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                12. Disclaimer of Warranties
+              </h2>
+              <p className="uppercase text-xs sm:text-sm font-medium text-neutral-600 leading-relaxed">
+                TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SERVICES ARE PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE.
+              </p>
+              <p className="text-xs sm:text-sm text-neutral-600">
+                CHARTES.TECH EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, ACCURACY, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, SECURE, TIMELY, OR ERROR-FREE, OR THAT ANY DEFECTS WILL BE CORRECTED.
+              </p>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 13 */}
-            <section id="governing-law" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  13
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Governing Law & Dispute Resolution
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  These Terms shall be governed by and construed in accordance with the laws of the applicable jurisdiction, without regard to conflict of law principles. Any legal disputes shall be resolved through binding arbitration or competent courts.
-                </p>
+            <section id="liability" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                13. Limitation of Liability
+              </h2>
+              <p className="uppercase text-xs sm:text-sm font-medium text-neutral-600 leading-relaxed">
+                TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL CHARTES.TECH, ITS OPERATORS, CONTRIBUTORS, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, PUNITIVE, OR EXEMPLARY DAMAGES, OR FOR LOSS OF PROFITS, REVENUE, BUSINESS, GOODWILL, DATA, OR ANTICIPATED SAVINGS, ARISING OUT OF OR IN CONNECTION WITH YOUR ACCESS TO OR USE OF (OR INABILITY TO ACCESS OR USE) THE SERVICES.
+              </p>
+              <p className="text-xs sm:text-sm text-neutral-600">
+                TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, OUR TOTAL AGGREGATE LIABILITY FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR THE SERVICES SHALL NOT EXCEED THE GREATER OF (A) THE TOTAL AMOUNT PAID BY YOU TO CHARTES.TECH FOR THE SERVICES IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO LIABILITY, OR (B) FIFTY UNITED STATES DOLLARS ($50.00).
+              </p>
+              <div className="rounded-lg bg-neutral-50 border border-neutral-200 p-4 text-xs sm:text-sm text-neutral-700">
+                <strong className="font-semibold text-neutral-900">Mandatory Rights Savings Clause:</strong> Nothing in these Terms limits or excludes liability or rights that cannot lawfully be limited or excluded under applicable law. Some jurisdictions do not permit the exclusion of certain warranties or limitations on certain liabilities; in such jurisdictions, liability is limited to the maximum extent permitted by law.
               </div>
             </section>
-
-            <hr className="border-[#EAE3D9]/60" />
 
             {/* Section 14 */}
-            <section id="terms-modifications" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  14
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Modifications to Terms
-                </h2>
-              </div>
-              <div className="prose prose-sm text-neutral-600 leading-relaxed space-y-3">
-                <p>
-                  We may update these Terms from time to time. When significant updates occur, we will notify registered users via in-app banner or email at least 30 days prior to the effective date.
-                </p>
-              </div>
+            <section id="indemnity" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                14. Indemnification
+              </h2>
+              <p>
+                To the maximum extent permitted by applicable law, you agree to defend, indemnify, and hold harmless chartes.tech, its operators, contributors, and agents from and against any third-party claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or relating to:
+              </p>
+              <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-neutral-600">
+                <li>Your User Content or content published through your account;</li>
+                <li>Your unlawful use of or interaction with the Services;</li>
+                <li>Your violation of these Terms;</li>
+                <li>Your infringement or violation of any third-party intellectual property, privacy, publicity, or other rights.</li>
+              </ul>
             </section>
 
-            <hr className="border-[#EAE3D9]/60" />
-
             {/* Section 15 */}
-            <section id="legal-contact" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-lg bg-[#18181B] text-white flex items-center justify-center text-xs font-bold font-mono">
-                  15
-                </span>
-                <h2 className={`${robotoSlab.className} text-xl sm:text-2xl font-bold text-neutral-900`}>
-                  Legal Inquiries & Notices
+            <section id="termination" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                15. Suspension & Termination
+              </h2>
+              <p>
+                You may stop using the Services and close your account at any time via your account settings.
+              </p>
+              <p>
+                chartes.tech reserves the right to suspend or terminate your account or access to the Services in the event of:
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-neutral-600">
+                <li>Material breach of these Terms or acceptable use policies;</li>
+                <li>Fraudulent, abusive, or harmful activity;</li>
+                <li>Security threats to the platform, other users, or third parties;</li>
+                <li>Violation of third-party platform developer requirements;</li>
+                <li>Compliance with statutory or regulatory requirements.</li>
+              </ul>
+              <p>
+                We may also suspend access where reasonably necessary to protect the Services, users, or third parties. Upon termination, provisions that by their nature should survive (including intellectual property, disclaimers, limitations of liability, indemnification, and dispute terms) shall survive.
+              </p>
+            </section>
+
+            {/* Section 16 */}
+            <section id="force-majeure" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                16. Events Outside Reasonable Control (Force Majeure)
+              </h2>
+              <p>
+                chartes.tech shall not be held liable for any delay or failure in performance resulting directly or indirectly from causes beyond our reasonable control, including internet service failures, cloud hosting outages, third-party social media platform outages or API modifications, power failures, cybersecurity incidents, strikes, labor disputes, natural disasters, acts of civil or military authorities, or government actions.
+              </p>
+            </section>
+
+            {/* Section 17 */}
+            <section id="governing-law" className="scroll-mt-24 space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                17. Applicable Law, Disputes & Consumer Protections
+              </h2>
+              <p>
+                These Terms are subject to applicable law. Nothing in these Terms prevents a user from exercising rights or pursuing remedies that cannot legally be excluded or restricted.
+              </p>
+              <p>
+                <strong>Consumer Rights:</strong> Nothing in these Terms is intended to exclude, restrict, or waive consumer rights or other protections that cannot lawfully be excluded or waived under applicable law.
+              </p>
+              <p>
+                <strong>Informal Dispute Resolution:</strong> Before initiating formal legal proceedings, the parties may attempt in good faith to resolve disputes by contacting chartes.tech through the contact information provided below.
+              </p>
+            </section>
+
+            {/* Section 18 */}
+            <section id="updates-contact" className="scroll-mt-24 space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2">
+                  18. Changes to These Terms & Contact Information
                 </h2>
-              </div>
-              <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EAE3D9] space-y-2">
-                <p className="text-xs text-neutral-700">
-                  For legal inquiries, contracts, or notices regarding these Terms, please contact:
+                <h3 className="text-base font-semibold text-neutral-900">18.1 Changes to Terms</h3>
+                <p>
+                  We may revise these Terms of Service from time to time as our Services develop, operational needs change, or legal requirements evolve. When changes occur, we will update the &quot;Effective Date&quot; and &quot;Last Updated&quot; dates at the top of this document.
                 </p>
-                <div className="text-xs text-neutral-900 font-medium">
-                  <div>Legal Department — <strong>chartes.tech</strong></div>
-                  <div>Email: <a href="mailto:legal@chartes.tech" className="text-[#A67C3D] hover:underline">legal@chartes.tech</a></div>
-                  <div>Support: <a href="mailto:support@chartes.tech" className="text-[#A67C3D] hover:underline">support@chartes.tech</a></div>
+                <p>
+                  If we make material changes, we will provide notice through appropriate channels (such as via an in-app notice or email) where required by applicable law. Changes will not affect rights or obligations that cannot legally be modified without additional notice or consent.
+                </p>
+              </div>
+
+              <div className="space-y-4 pt-2">
+                <h3 className="text-base font-semibold text-neutral-900">18.2 chartes.tech Contact</h3>
+                <p>
+                  If you have questions, feedback, or inquiries regarding these Terms of Service, please contact our team:
+                </p>
+                <div className="rounded-lg border border-neutral-200 p-4 bg-neutral-50/50 space-y-1.5 text-xs sm:text-sm">
+                  <div className="font-semibold text-neutral-900">chartes.tech Contact</div>
+                  <div className="text-neutral-600">
+                    Terms & Legal Inquiries: <a href="mailto:legal@chartes.tech" className="text-[#A67C3D] underline">legal@chartes.tech</a>
+                  </div>
+                  <div className="text-neutral-600">
+                    General Support: <a href="mailto:support@chartes.tech" className="text-[#A67C3D] underline">support@chartes.tech</a>
+                  </div>
+                  <div className="text-neutral-600">
+                    Privacy Inquiries: <a href="mailto:privacy@chartes.tech" className="text-[#A67C3D] underline">privacy@chartes.tech</a>
+                  </div>
                 </div>
               </div>
             </section>
+
           </main>
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-6 right-6 z-40 rounded-full border border-neutral-200 bg-white p-2.5 text-neutral-600 shadow-md transition hover:bg-neutral-50 hover:text-neutral-900 print:hidden"
+          aria-label="Back to Top"
+        >
+          <ArrowUp className="h-4 w-4" />
+        </button>
+      )}
+
+      {/* Shared Site Footer */}
       <Footer />
     </div>
   );

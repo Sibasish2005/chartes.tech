@@ -557,9 +557,10 @@ sequenceDiagram
 └──────────────────────┴─────────────────────────────────────────────────┘
 ```
 
-### Privacy & Regulatory Compliance (GDPR / CCPA)
-* `/privacy` and `/privacy-policy` serve an interactive 16-section compliance document.
-* Transparent data retention policies, automated session purging (`expiresAt < new Date()`), and user-driven account/token disconnection tools.
+### Privacy & Legal Governance (`/privacy` & `/terms`)
+* `/privacy` and `/privacy-policy` serve an early-stage SaaS privacy policy with realistic legal safeguards, non-waivable statutory rights savings clauses, and transparent data disclosures.
+* `/terms` and `/terms-of-service` provide balanced, reasonable terms of service with clear user content ownership, independent third-party API disclaimers (Meta, Google, LinkedIn), AI verification notices, and no-guaranteed-marketing-results terms.
+* Data retention policies, automated session purging (`expiresAt < new Date()`), and user-driven account/token disconnection tools.
 
 ---
 

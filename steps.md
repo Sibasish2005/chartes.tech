@@ -35,7 +35,7 @@ End-to-End Zod Validation   ✅ DONE (`lib/validations/`, API routes & client fo
        ↓
 Connected Accounts Hub      ✅ DONE (`/connected-accounts` UI & provider connection cards)
        ↓
-Privacy Policy & Legal Hub  ✅ DONE (`/privacy`, `/privacy-policy`, GDPR/CCPA compliance)
+Privacy Policy & Legal Hub  ✅ DONE (`/privacy`, `/terms`, early-stage SaaS safeguards)
        ↓
 LinkedIn OAuth 2.0 Engine   ✅ DONE (`/api/social/linkedin`, `/api/social/linkedin/callback`, OpenID Connect)
        ↓
@@ -207,12 +207,11 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ### STEP 11 — Privacy Policy & Legal Governance Hub ✅
 - **Privacy Policy (`/privacy` & `/privacy-policy`):**
-  - Implemented 16-section interactive privacy document covering GDPR, CCPA/CPRA, and global data privacy standards.
-  - Integrated full-text section search, interactive sticky table of contents, PDF print engine, and smooth scroll anchors.
+  - Implemented structured legal documentation with interactive table of contents, print stylesheet, and smooth scrolling.
   - Configured automated redirect route at `/privacy-policy` pointing to `/privacy`.
-- **Branding & Compliance Alignment:**
-  - Complete rebranding to `chartes.tech` across metadata, legal disclosures, policy copy, and footer links.
-  - Dedicated DPO and legal contact mailto points (`privacy@chartes.tech`, `legal@chartes.tech`, `dpo@chartes.tech`).
+- **Branding & Communication Channels:**
+  - Complete alignment to `chartes.tech` across metadata, legal disclosures, and policy copy.
+  - Direct contact mailto points (`privacy@chartes.tech`, `legal@chartes.tech`, `support@chartes.tech`).
 
 ---
 
@@ -247,7 +246,7 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
     - **Solutions:** `/#solutions`
     - **Contact:** `/#contact`
     - **Get Started:** `/login`
-    - **Book a Call:** `/booking`
+    - **Automation:** `/automation` (deprecated `/booking` redirected to `/automation`)
   - Added corresponding `id` attributes across landing page section components (`aboutMe.tsx`, `services.tsx`, `solutions.tsx`, `footer.tsx`).
 - **Growth Accordion Gallery Touch Fix & Full-Bleed Sizing (`components/AccordionGallery.tsx` & `growth.tsx`):**
   - Removed dummy `link: '#'` properties to prevent unintended `/` page-top redirects on mobile card taps.
@@ -407,14 +406,30 @@ Social Media Automation     ⏳ PENDING (Publishing queue / cron worker triggers
 
 ---
 
+### STEP 25 — Privacy Policy & Terms of Service Minimalist Redesign & Route Consolidation ✅
+- **Minimalist Clean UI Redesign (`/privacy` & `/terms`):**
+  - Completely redesigned both Privacy Policy and Terms of Service with a unified, lightweight, readable document architecture.
+  - Removed bulky dark glowing hero sections, heavy badge numbers, and card containers in favor of sticky minimal top navigation, desktop sidebar TOC with scroll tracking, mobile jump dropdown selector, and clean print styles.
+- **Privacy Policy Legal Safeguards (`app/privacy/PrivacyContent.tsx`):**
+  - Tailored specifically for an early-stage SaaS: honest operator description, clear data collection scope, user content responsibility, generic service provider clause, and non-essential cookie consent language.
+  - Preserved mandatory statutory rights savings clause and removed unverified vendor assertions, fictitious entity names, and non-existent DPO titles.
+- **Terms of Service for Early-Stage Project (`app/terms/TermsContent.tsx`):**
+  - Established maximum reasonable legal protection without claiming false corporate identities (no "Inc.", "LLC", or "Pvt Ltd") or artificial legal immunity.
+  - Integrated essential SaaS protections: user content ownership with limited operational licenses, third-party platform API disclaimers (Meta, Google, LinkedIn), AI output review notice, explicit "no guarantee of marketing results" clause, "as is" warranty disclaimers, liability caps with mandatory-law savings clauses, and informal dispute resolution.
+- **Route Deprecation & Redirection (`/booking` → `/automation`):**
+  - Deprecated `/booking` and configured permanent Next.js server redirects (HTTP 308 via `next.config.ts` and fallback via `app/booking/page.tsx`) to `/automation`.
+  - Updated all landing page navbar and footer links directly to `/automation`.
+
+---
+
 ## 🎯 Immediate Next Roadmap
 
-1. **[ ] Step 25 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
+1. **[ ] Step 26 — Meta Graph API (Facebook Pages & Instagram) OAuth Integration**
    - Connect Facebook Login / Graph API OAuth flow (`/api/social/facebook`, `/api/social/instagram`).
    - Exchange short-lived token for long-lived page access tokens.
    - Upsert `Account` records for Facebook Pages and Instagram Professional accounts.
 
-2. **[ ] Step 26 — X.com (Twitter API v2) & Tech Socials Integration**
+2. **[ ] Step 27 — X.com (Twitter API v2) & Tech Socials Integration**
    - Implement OAuth 2.0 PKCE for X/Twitter and AT Protocol for Bluesky.
 
 
