@@ -54,10 +54,12 @@ export default async function ConnectedAccountsPage() {
       description:
         "Automate high-converting carousels and visual updates directly to your Professional account.",
       connected: connectedProviders.has("instagram"),
-      connectUrl: "#",
+      connectUrl: "/api/social/facebook",
       iconName: "instagram",
-      badge: "Coming Soon",
-      badgeColor: "bg-neutral-100 text-neutral-400 border-neutral-200",
+      badge: connectedProviders.has("instagram") ? "Active" : "Ready",
+      badgeColor: connectedProviders.has("instagram")
+        ? "bg-neutral-100 text-neutral-700 border-neutral-200"
+        : "bg-neutral-100 text-neutral-500 border-neutral-200",
     },
     {
       id: "facebook",
@@ -66,10 +68,12 @@ export default async function ConnectedAccountsPage() {
       description:
         "Publish scheduled announcements, promotions, and media directly to your Facebook Pages.",
       connected: connectedProviders.has("facebook"),
-      connectUrl: "#",
+      connectUrl: "/api/social/facebook",
       iconName: "facebook",
-      badge: "Coming Soon",
-      badgeColor: "bg-neutral-100 text-neutral-400 border-neutral-200",
+      badge: connectedProviders.has("facebook") ? "Active" : "Ready",
+      badgeColor: connectedProviders.has("facebook")
+        ? "bg-neutral-100 text-neutral-700 border-neutral-200"
+        : "bg-neutral-100 text-neutral-500 border-neutral-200",
     },
   ];
 

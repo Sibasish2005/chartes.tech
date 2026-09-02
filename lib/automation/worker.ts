@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { publishToLinkedIn } from "./publisher/linkedin";
+import { publishToFacebook } from "./publisher/facebook";
+import { publishToInstagram } from "./publisher/instagram";
 
 export async function processScheduledPosts() {
   const now = new Date();
@@ -59,15 +61,33 @@ export async function processScheduledPosts() {
           continue;
         }
 
-        /*
-         * At the moment we only support LinkedIn.
-         *
-         * Facebook and Instagram will be added later without
-         * changing the overall worker architecture.
-         */
         if (platform.platform === "LINKEDIN") {
           const result =
             await processLinkedInPost(
+              post,
+              platform.id
+            );
+
+          if (result) {
+            published++;
+          } else {
+            failed++;
+          }
+        } else if (platform.platform === "FACEBOOK") {
+          const result =
+            await processFacebookPost(
+              post,
+              platform.id
+            );
+
+          if (result) {
+            published++;
+          } else {
+            failed++;
+          }
+        } else if (platform.platform === "INSTAGRAM") {
+          const result =
+            await processInstagramPost(
               post,
               platform.id
             );
@@ -358,6 +378,163 @@ async function processLinkedInPost(
 
   console.log(
     `[Automation] LinkedIn publication succeeded for post ${post.id}`
+  );
+
+  return true;
+}
+
+/**
+ * Process one Facebook platform publication.
+ */
+async function processFacebookPost(
+  post: {
+    id: string;
+    userId: string;
+    caption: string | null;
+    imageUrl: string | null;
+  },
+  postPlatformId: string
+): Promise<boolean> {
+  console.log(
+    `[Automation] Publishing post ${post.id} to Facebook`
+  );
+
+  const account = await prisma.account.findFirst({
+    where: {
+      userId: post.userId,
+      provider: "facebook",
+    },
+  });
+
+  if (!account || !account.accessToken || !account.providerAccountId) {
+    console.error(
+      `[Automation] Facebook account or credentials missing for user ${post.userId}`
+    );
+
+    await prisma.postPlatform.update({
+      where: { id: postPlatformId },
+      data: { status: "FAILED" },
+    });
+
+    return false;
+  }
+
+  const result = await publishToFacebook({
+    pageAccessToken: account.accessToken,
+    pageId: account.providerAccountId,
+    caption: post.caption ?? "",
+    imageUrl: post.imageUrl,
+  });
+
+  if (!result.success) {
+    console.error(
+      `[Automation] Facebook publication failed for post ${post.id}:`,
+      result.error
+    );
+
+    await prisma.postPlatform.update({
+      where: { id: postPlatformId },
+      data: { status: "FAILED" },
+    });
+
+    return false;
+  }
+
+  await prisma.postPlatform.update({
+    where: { id: postPlatformId },
+    data: {
+      status: "PUBLISHED",
+      publishedAt: new Date(),
+    },
+  });
+
+  console.log(
+    `[Automation] Facebook publication succeeded for post ${post.id}`
+  );
+
+  return true;
+}
+
+/**
+ * Process one Instagram platform publication.
+ */
+async function processInstagramPost(
+  post: {
+    id: string;
+    userId: string;
+    caption: string | null;
+    imageUrl: string | null;
+  },
+  postPlatformId: string
+): Promise<boolean> {
+  console.log(
+    `[Automation] Publishing post ${post.id} to Instagram`
+  );
+
+  const account = await prisma.account.findFirst({
+    where: {
+      userId: post.userId,
+      provider: "instagram",
+    },
+  });
+
+  if (!account || !account.accessToken || !account.providerAccountId) {
+    console.error(
+      `[Automation] Instagram account or credentials missing for user ${post.userId}`
+    );
+
+    await prisma.postPlatform.update({
+      where: { id: postPlatformId },
+      data: { status: "FAILED" },
+    });
+
+    return false;
+  }
+
+  if (!post.imageUrl) {
+    console.error(
+      `[Automation] Instagram publication failed for post ${post.id}: Image URL is required`
+    );
+
+    await prisma.postPlatform.update({
+      where: { id: postPlatformId },
+      data: { status: "FAILED" },
+    });
+
+    return false;
+  }
+
+  const result = await publishToInstagram({
+    accessToken: account.accessToken,
+    igUserId: account.providerAccountId,
+    caption: post.caption ?? "",
+    imageUrl: post.imageUrl,
+  });
+
+  if (!result.success) {
+    console.error(
+      `[Automation] Instagram publication failed for post ${post.id}:`,
+      result.error
+    );
+
+    await prisma.postPlatform.update({
+      where: { id: postPlatformId },
+      data: { status: "FAILED" },
+    });
+
+    return false;
+  }
+
+  await prisma.postPlatform.update({
+    where: { id: postPlatformId },
+    data: {
+      status: "PUBLISHED",
+      publishedAt: new Date(),
+    },
+  });
+
+  console.log(
+    `[Automation] Instagram publication succeeded for post ${post.id}`
   );
 
   return true;
