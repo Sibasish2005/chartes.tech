@@ -178,13 +178,6 @@ export default function Navbar({ isLoggedIn = false }: NavbarProps) {
                 >
                   {isLoggedIn ? "Dashboard" : "Get Started"}
                 </Link>
-                <Link 
-                  href="/automation" 
-                  onClick={toggleMenu}
-                  className="w-full text-center py-3 border border-neutral-300 text-neutral-800 font-semibold rounded-full hover:bg-neutral-50 transition-all"
-                >
-                  Automation
-                </Link>
               </motion.div>
             </div>
           </motion.div>
