@@ -1,11 +1,19 @@
 from fastapi import FastAPI
 
+from app.core.config import get_settings
+
+
+settings = get_settings()
+
 app = FastAPI(
-    title="SaaS Platform API",
-    version="0.1.0",
+    title=settings.app_name,
+    version=settings.app_version,
 )
 
 
-@app.get("/")
+@app.get("/health")
 async def health_check():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "environment": settings.app_env,
+    }
